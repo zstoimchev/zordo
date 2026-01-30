@@ -10,4 +10,14 @@
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.2"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Update="appsettings.Development.json">
+        <DependentUpon>appsettings.json</DependentUpon>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\zOrdo.Services\zOrdo.Services.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -1,6 +1,0 @@
-@zOrdo_HostAddress = http://localhost:5279
-
-GET {{zOrdo_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
