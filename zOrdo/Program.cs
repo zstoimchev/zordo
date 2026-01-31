@@ -1,41 +1,47 @@
-var builder = WebApplication.CreateBuilder(args);
+using zOrdo.Repositories;
+using zOrdo.Repositories.UsersRepository;
+using zOrdo.Services.UserService;
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+Console.WriteLine("***********************************************************************************");
+Console.WriteLine("***** Welcome To zOrdo - your AI-assisted task scheduling and planning engine *****");
+Console.WriteLine("***********************************************************************************");
+Console.WriteLine("");
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
+
+// Register DB utils
+var connectionString = builder.Configuration.GetSection("DatabaseSettings:ConnectionString").Value ??
+                       throw new InvalidOperationException("Missing DB connection string");
+builder.Services.AddSingleton<ISharedDatabaseUtils>(new SharedDatabaseUtils(connectionString));
+
+// Add services to the container
+builder.Services.AddTransient<IUserService, UserService>();
+
+// Add repositories to the container
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Initialize database
+using (var scope = app.Services.CreateScope())
+{
+    var dbUtils = scope.ServiceProvider.GetRequiredService<ISharedDatabaseUtils>();
+    var initializer = new DatabaseInitializer(dbUtils);
+    initializer.Initialize();
+}
+
+// Middleware
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-    {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast");
-
+app.MapControllers();
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

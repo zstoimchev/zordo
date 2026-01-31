@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\zOrdo.Models\zOrdo.Models.csproj" />
+      <ProjectReference Include="..\zOrdo.Repositories\zOrdo.Repositories.csproj" />
     </ItemGroup>
 
 </Project>
