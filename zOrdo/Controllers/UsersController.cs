@@ -19,7 +19,7 @@ public class UsersController(IUserService userService) : ControllerBase
     public async Task<IActionResult> GetUserByIdAsync(int id)
     {
         var result = await userService.GetUserAsync(id);
-        return Ok(result);
+        return result != null ? Ok(result) : NotFound();
     }
     
     [HttpGet("{email}")]

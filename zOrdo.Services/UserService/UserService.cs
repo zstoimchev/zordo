@@ -12,8 +12,9 @@ public class UserService(
         throw new NotImplementedException();
     }
 
-    public Task<User> GetUserAsync(long id)
+    public async Task<User?> GetUserAsync(int id)
     {
+        return await userRepository.GetUserAsync(id);
         throw new NotImplementedException();
     }
 
