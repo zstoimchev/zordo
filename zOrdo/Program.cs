@@ -27,14 +27,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Initialize database
-using (var scope = app.Services.CreateScope())
-{
-    var dbUtils = scope.ServiceProvider.GetRequiredService<ISharedDatabaseUtils>();
-    var initializer = new DatabaseInitializer(dbUtils);
-    initializer.Initialize();
-}
-
 // Middleware
 if (app.Environment.IsDevelopment())
 {
