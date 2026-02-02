@@ -20,7 +20,7 @@ public class SharedProperties
     /// <summary>
     /// Deletion timestamp in UTC
     /// </summary>
-    public DateTime DeletedOnUtc { get; set; }
+    public DateTime? DeletedOnUtc { get; set; }
     
     /// <summary>
     /// Deleted by identifier
