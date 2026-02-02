@@ -7,16 +7,37 @@ public class UserRepository(
     ISharedDatabaseUtils utils
 ) : IUserRepository
 {
-    public Task<User> CreateUserAsync(User user)
+    public async Task<User?> CreateUserAsync(User user)
     {
-        throw new NotImplementedException();
+        using var connection = utils.CreateConnection();
+        const string sql = """
+                           INSERT INTO Users (
+                                              FIRST_NAME, 
+                                              MIDDLE_NAME, 
+                                              LAST_NAME, 
+                                              EMAIL
+                           ) VALUES (
+                                   @first_name, 
+                                   @middle_name, 
+                                   @last_name,
+                                   @email
+                           ) RETURNING *
+                           """;
+
+        return await connection.ExecuteScalarAsync<User>(sql, new
+        {
+            first_name = user.FirstName,
+            middle_name = user.LastName,
+            last_name = user.LastName,
+            email = user.Email
+        });
     }
 
     public async Task<User?> GetUserAsync(long id)
     {
         using var connection = utils.CreateConnection();
-        const string sql = "SELECT * FROM Users WHERE Id = @Id";
-        return await connection.QuerySingleOrDefaultAsync<User>(sql, new { Id = id });
+        const string sql = "SELECT * FROM Users WHERE Id = @id";
+        return await connection.QuerySingleOrDefaultAsync<User>(sql, new { id = id });
     }
 
     public async Task<User?> GetUserByEmailAsync(string email)

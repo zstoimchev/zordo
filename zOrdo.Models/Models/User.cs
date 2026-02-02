@@ -10,7 +10,7 @@ public class User : SharedProperties
     /// <summary>
     /// Middle name of the user
     /// </summary>
-    public string MiddleName { get; set; }
+    public string? MiddleName { get; set; }
     
     /// <summary>
     /// Last name of the user
@@ -25,5 +25,5 @@ public class User : SharedProperties
     /// <summary>
     /// Password hash of the user
     /// </summary>
-    public string PasswordHash { get; set; }
+    public string? PasswordHash { get; set; }
 }
