@@ -19,9 +19,11 @@ public class UserRepository(
         return await connection.QuerySingleOrDefaultAsync<User>(sql, new { Id = id });
     }
 
-    public Task<User> GetUserByEmailAsync(string email)
+    public async Task<User?> GetUserByEmailAsync(string email)
     {
-        throw new NotImplementedException();
+        using var connection = utils.CreateConnection();
+        const string sql = "SELECT * FROM Users WHERE EMAIL = @email";
+        return await connection.QuerySingleOrDefaultAsync<User>(sql, new { email = email });
     }
 
     public Task<User> UpdateUserAsync(User user, int id)

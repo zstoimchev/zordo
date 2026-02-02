@@ -18,9 +18,9 @@ public class UserService(
         throw new NotImplementedException();
     }
 
-    public Task<User> GetUserByEmailAsync(string email)
+    public async Task<User> GetUserByEmailAsync(string email)
     {
-        throw new NotImplementedException();
+        return await userRepository.GetUserByEmailAsync(email);
     }
 
     public async Task<User> UpdateUserAsync(User userRequest, string email)
