@@ -15,22 +15,28 @@ public class UserRepository(
                                               FIRST_NAME, 
                                               MIDDLE_NAME, 
                                               LAST_NAME, 
-                                              EMAIL
+                                              EMAIL,
+                                              INSERTED_ON_UTC
                            ) VALUES (
                                    @first_name, 
                                    @middle_name, 
                                    @last_name,
-                                   @email
-                           ) RETURNING *
+                                   @email,
+                                   @inserted_on_utc
+                           ) RETURNING ID
                            """;
 
-        return await connection.ExecuteScalarAsync<User>(sql, new
+        var insertedId = await connection.ExecuteScalarAsync<int>(sql, new
         {
             first_name = user.FirstName,
             middle_name = user.LastName,
             last_name = user.LastName,
-            email = user.Email
+            email = user.Email,
+            inserted_on_utc = DateTime.UtcNow
         });
+
+        user.Id = insertedId;
+        return insertedId > 0 ? user : null;
     }
 
     public async Task<User?> GetUserAsync(long id)
