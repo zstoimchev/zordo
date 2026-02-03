@@ -5,36 +5,43 @@ namespace zOrdo.Services.UserService;
 
 public class UserService(
     IUserRepository userRepository
-    ) : IUserService
+) : IUserService
 {
     public async Task<ZordoResult<User>> CreateUserAsync(User user)
     {
         // check if user with the given email already exists. If yes, throw exception. If not, create user.
         var existingUser = await userRepository.GetUserByEmailAsync(user.Email);
-        if (existingUser != null) 
+        if (existingUser != null)
             return new ZordoResult<User>().CreateConflict("User with the given email already exists.");
-        
+
         var createdUser = await userRepository.CreateUserAsync(user);
-        if (createdUser == null) return new ZordoResult<User>().CreateConflict("Failed to create user.");
-        
-        return new ZordoResult<User>().CreateSuccess(createdUser);
+
+        return createdUser == null
+            ? new ZordoResult<User>().CreateConflict("Failed to create user.")
+            : new ZordoResult<User>().CreateSuccess(createdUser);
     }
 
-    public async Task<User?> GetUserAsync(int id)
+    public async Task<ZordoResult<User>> GetUserAsync(int id)
     {
-        return await userRepository.GetUserAsync(id);
-        throw new NotImplementedException();
+        var result = await userRepository.GetUserAsync(id);
+        return result == null
+            ? new ZordoResult<User>().CreateNotFound("User with the given email does not exist.")
+            : new ZordoResult<User>().CreateSuccess(result);
     }
 
-    public async Task<User?> GetUserByEmailAsync(string email)
+    public async Task<ZordoResult<User>> GetUserByEmailAsync(string email)
     {
-        return await userRepository.GetUserByEmailAsync(email);
+        var result = await userRepository.GetUserByEmailAsync(email);
+        return result == null
+            ? new ZordoResult<User>().CreateNotFound("User with the given email does not exist.")
+            : new ZordoResult<User>().CreateSuccess(result);
     }
 
-    public async Task<User> UpdateUserAsync(User userRequest, string email)
+    public async Task<ZordoResult<User>> UpdateUserAsync(User userRequest, string email)
     {
         var existingUser = await userRepository.GetUserByEmailAsync(email);
-        if (existingUser == null) return null; // TODO: deal with not found
+        if (existingUser == null)
+            return new ZordoResult<User>().CreateNotFound("User with the given email already exists.");
 
         var updatedUser = new User
         {
@@ -42,9 +49,9 @@ public class UserService(
             LastName = userRequest.LastName ?? existingUser.LastName,
             Email = userRequest.Email ?? existingUser.Email,
         };
-        
+
         updatedUser = await userRepository.UpdateUserAsync(updatedUser, existingUser.Id);
-        return updatedUser;
+        return new ZordoResult<User>().CreateSuccess(updatedUser);
     }
 
     public Task<bool> DeleteUserAsync(string email)
