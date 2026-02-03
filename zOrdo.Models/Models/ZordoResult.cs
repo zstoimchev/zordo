@@ -27,6 +27,15 @@ public class ZordoResult<T>
         return this;
     }
     
+    public ZordoResult<T> CreateNotFound(string message = "Not found")
+    {
+        Success = false;
+        Message = message;
+        Data = default;
+        StatusCode = HttpStatusCode.NotFound;
+        return this;
+    }
+    
     public ZordoResult<T> CreateConflict(string message = "Conflict")
     {
         Success = false;
