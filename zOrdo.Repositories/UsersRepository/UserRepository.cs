@@ -53,13 +53,35 @@ public class UserRepository(
         return await connection.QuerySingleOrDefaultAsync<User>(sql, new { email = email });
     }
 
-    public Task<User> UpdateUserAsync(User user, int id)
+    public async Task<User?> UpdateUserAsync(User user, int id)
     {
-        throw new NotImplementedException();
+        using var connection = utils.CreateConnection();
+        const string sql = """
+                           UPDATE Users SET 
+                               FIRST_NAME = @first_name,
+                               MIDDLE_NAME = @middle_name,
+                               LAST_NAME = @last_name,
+                               EMAIL = @email
+                           WHERE ID = @id
+                           """;
+
+        var rowsAffected = await connection.ExecuteAsync(sql, new
+        {
+            first_name = user.FirstName,
+            middle_name = user.LastName,
+            last_name = user.LastName,
+            email = user.Email,
+            id = id
+        });
+
+        return rowsAffected != 0 ? user : null;
     }
 
-    public Task<bool> DeleteUserAsync(int id)
+    public async Task<bool> DeleteUserAsync(int id)
     {
-        throw new NotImplementedException();
+        using var connection = utils.CreateConnection();
+        const string sql = "DELETE FROM Users WHERE Id = @id";
+        var rowsAffected = await connection.ExecuteAsync(sql, new { id = id });
+        return rowsAffected != 0;
     }
 }

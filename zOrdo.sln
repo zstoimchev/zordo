@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "zOrdo.Repositories", "zOrdo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "zOrdo.Models", "zOrdo.Models\zOrdo.Models.csproj", "{C1E10674-89B4-4A71-874C-845A251ED216}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "zOrdo.DatabaseApi", "zOrdo.DatabaseApi\zOrdo.DatabaseApi.csproj", "{B4F0D192-8FDF-4FCD-A36C-B68AB09F5298}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{C1E10674-89B4-4A71-874C-845A251ED216}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1E10674-89B4-4A71-874C-845A251ED216}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1E10674-89B4-4A71-874C-845A251ED216}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4F0D192-8FDF-4FCD-A36C-B68AB09F5298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4F0D192-8FDF-4FCD-A36C-B68AB09F5298}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4F0D192-8FDF-4FCD-A36C-B68AB09F5298}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4F0D192-8FDF-4FCD-A36C-B68AB09F5298}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
