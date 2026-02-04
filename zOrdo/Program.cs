@@ -10,11 +10,6 @@ Console.WriteLine("");
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
-// Register DB utils
-var connectionString = builder.Configuration.GetSection("DatabaseSettings:ConnectionString").Value ??
-                       throw new InvalidOperationException("Missing DB connection string");
-builder.Services.AddSingleton<ISharedDatabaseUtils>(new SharedDatabaseUtils(connectionString));
-
 // Add services to the container
 builder.Services.AddTransient<IUserService, UserService>();
 
@@ -24,7 +19,7 @@ builder.Services.AddTransient<IUserRepository, UserClient>();
 // Configure Http Clients
 builder.Services.AddHttpClient<IUserRepository, UserClient>(client =>
 {
-    var baseUrl = builder.Configuration["DatabaseProxy:BaseUrl"] ??
+    var baseUrl = builder.Configuration["Clients:DatabaseApi:BaseUrl"] ??
                   throw new InvalidOperationException("Missing DatabaseApi BaseUrl");
     
     client.BaseAddress = new Uri(baseUrl);
