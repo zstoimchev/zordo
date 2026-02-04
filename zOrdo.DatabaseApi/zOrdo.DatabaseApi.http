@@ -1,6 +1,0 @@
-@zOrdo.DatabaseApi_HostAddress = http://localhost:5052
-
-GET {{zOrdo.DatabaseApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

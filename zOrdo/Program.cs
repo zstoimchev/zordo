@@ -21,6 +21,7 @@ builder.Services.AddTransient<IUserService, UserService>();
 // Add repositories to the container
 builder.Services.AddTransient<IUserRepository, UserClient>();
 
+// Configure Http Clients
 builder.Services.AddHttpClient<IUserRepository, UserClient>(client =>
 {
     var baseUrl = builder.Configuration["DatabaseProxy:BaseUrl"] ??
