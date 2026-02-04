@@ -19,7 +19,15 @@ builder.Services.AddSingleton<ISharedDatabaseUtils>(new SharedDatabaseUtils(conn
 builder.Services.AddTransient<IUserService, UserService>();
 
 // Add repositories to the container
-builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IUserRepository, UserClient>();
+
+builder.Services.AddHttpClient<IUserRepository, UserClient>(client =>
+{
+    var baseUrl = builder.Configuration["DatabaseProxy:BaseUrl"] ??
+                  throw new InvalidOperationException("Missing DatabaseApi BaseUrl");
+    
+    client.BaseAddress = new Uri(baseUrl);
+});
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
