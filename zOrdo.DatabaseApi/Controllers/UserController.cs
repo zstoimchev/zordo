@@ -6,8 +6,10 @@ namespace zOrdo.DatabaseApi.Controllers;
 
 [ApiController]
 [Route("api/users")]
-public class UsersController(IUserRepository userRepository) : ControllerBase
+public class UsersController(IUserRepository userRepository, ILoggerFactory loggerFactory) : ControllerBase
 {
+    private readonly ILogger _logger = loggerFactory.CreateLogger<UsersController>();
+
     [HttpPost]
     public async Task<ActionResult<User>> CreateUser(User user)
     {
@@ -27,6 +29,14 @@ public class UsersController(IUserRepository userRepository) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<User>> GetUserByEmail([FromQuery] string email)
     {
+        _logger.LogInformation("this is a test");
+        var user1 = new User()
+        {
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "",
+        };
+        return Ok(user1);
         var user = await userRepository.GetUserByEmailAsync(email);
         return user is null ? NotFound() : Ok(user);
     }

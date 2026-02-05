@@ -1,3 +1,4 @@
+using Serilog;
 using zOrdo.Repositories;
 using zOrdo.Repositories.UsersRepository;
 
@@ -7,6 +8,18 @@ Console.WriteLine("****************************************************");
 Console.WriteLine("");
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders();
+
+// Configure Serilog from appsettings.json
+// builder.Host.UseSerilog((context, services, configuration) => configuration
+//     .ReadFrom.Configuration(context.Configuration)
+//     .ReadFrom.Services(services)
+//     .Enrich.FromLogContext());
+builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
+    loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration));
+
+
 builder.Services.AddControllers();
 
 // Register DB utils
@@ -30,6 +43,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
