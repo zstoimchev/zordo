@@ -7,12 +7,11 @@ public class UserService(
     IUserRepository userRepository
 ) : IUserService
 {
-    public async Task<ZordoResult<User>> CreateUserAsync(User user)
+    public async Task<User?> CreateUserAsync(User user)
     {
         // check if user with the given email already exists. If yes, throw exception. If not, create user.
         var existingUser = await userRepository.GetUserByEmailAsync(user.Email);
-        if (existingUser != null)
-            return new ZordoResult<User>().CreateConflict("User with the given email already exists.");
+        if (existingUser != null) return null;
 
         var createdUser = await userRepository.CreateUserAsync(user);
 
@@ -21,12 +20,10 @@ public class UserService(
             : new ZordoResult<User>().CreateSuccess(createdUser);
     }
 
-    public async Task<ZordoResult<User>> GetUserAsync(int id)
+    public async Task<User?> GetUserAsync(int id)
     {
         var result = await userRepository.GetUserAsync(id);
-        return result == null
-            ? new ZordoResult<User>().CreateNotFound("User with the given email does not exist.")
-            : new ZordoResult<User>().CreateSuccess(result);
+        return result;
     }
 
     public async Task<ZordoResult<User>> GetUserByEmailAsync(string email)

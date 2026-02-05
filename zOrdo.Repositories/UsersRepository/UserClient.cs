@@ -19,11 +19,11 @@ public class UserClient(HttpClient client) : IUserRepository
         return await response.Content.ReadFromJsonAsync<User>();
     }
 
-    public async Task<User?> GetUserAsync(long id)
+    public async Task<User> GetUserAsync(long id)
     {
         var response = await client.GetAsync($"{RequestUri}/{id}");
         response.EnsureSuccessStatusCode(); // todo: handle errors
-        return await response.Content.ReadFromJsonAsync<User>();
+        return (await response.Content.ReadFromJsonAsync<User>())!;
     }
 
     public async Task<User?> GetUserByEmailAsync(string email)

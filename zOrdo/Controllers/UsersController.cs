@@ -6,22 +6,22 @@ namespace zOrdo.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UsersController(IUserService userService) : ControllerBase
+public class UsersController(IUserService userService) : ZordoController
 {
     [HttpPost]
-    public async Task<IActionResult> CreateUserAsync([FromBody] User user)
+    public async Task<ActionResult<User>> CreateUserAsync([FromBody] User user)
     {
         var result = await userService.CreateUserAsync(user);
-        return Ok(result);
+        return OkOrConflict(result);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetUserByIdAsync(int id)
+    public async Task<ActionResult<User>> GetUserByIdAsync(int id)
     {
         var result = await userService.GetUserAsync(id);
-        return result != null ? Ok(result) : NotFound();
+        return OkOrNotFound(result);
     }
-    
+
     [HttpGet("{email}")]
     public async Task<IActionResult> GetUserByEmailAsync(string email)
     {

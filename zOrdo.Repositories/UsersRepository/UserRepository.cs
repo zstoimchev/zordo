@@ -39,11 +39,11 @@ public class UserRepository(
         return insertedId > 0 ? user : null;
     }
 
-    public async Task<User?> GetUserAsync(long id)
+    public async Task<User> GetUserAsync(long id)
     {
         using var connection = utils.CreateConnection();
         const string sql = "SELECT * FROM Users WHERE Id = @id";
-        return await connection.QuerySingleOrDefaultAsync<User>(sql, new { id = id });
+        return (await connection.QuerySingleOrDefaultAsync<User>(sql, new { id = id }))!;
     }
 
     public async Task<User?> GetUserByEmailAsync(string email)
