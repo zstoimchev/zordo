@@ -27,7 +27,14 @@ public class UsersController(IUserRepository userRepository) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<User>> GetUserByEmail([FromQuery] string email)
     {
-        var user = await userRepository.GetUserByEmailAsync(email);
+        var user = new User()
+        {
+            FirstName = "Zhivko",
+            MiddleName = "Zoran",
+            LastName = "Stoimchev",
+            Email = "zstoimchev@outlook.com"
+        };
+        return Ok(user);
         return user is null ? NotFound() : Ok(user);
     }
 
