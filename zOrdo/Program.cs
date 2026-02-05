@@ -1,3 +1,4 @@
+using Serilog;
 using zOrdo.Repositories;
 using zOrdo.Repositories.UsersRepository;
 using zOrdo.Services.UserService;
@@ -8,6 +9,9 @@ Console.WriteLine("*************************************************************
 Console.WriteLine("");
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
+    loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration));
+
 builder.Services.AddControllers();
 
 // Add services to the container
@@ -19,9 +23,9 @@ builder.Services.AddTransient<IUserRepository, UserClient>();
 // Configure Http Clients
 builder.Services.AddHttpClient<IUserRepository, UserClient>(client =>
 {
-    var baseUrl = builder.Configuration["Clients:DatabaseApi:BaseUrl"] ??
-                  throw new InvalidOperationException("Missing DatabaseApi BaseUrl");
-    
+    var baseUrl = 
+        builder.Configuration["Clients:DatabaseApi:BaseUrl"] ?? 
+        throw new InvalidOperationException("Missing DatabaseApi BaseUrl");
     client.BaseAddress = new Uri(baseUrl);
 });
 
@@ -30,6 +34,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+app.UseSerilogRequestLogging();
 
 // Middleware
 if (app.Environment.IsDevelopment())
