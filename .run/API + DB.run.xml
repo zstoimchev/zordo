@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="API + DB" type="CompoundRunConfigurationType">
-    <toRun name="zOrdo.DatabaseApi: http" type="LaunchSettings" />
-    <toRun name="zOrdo: http" type="LaunchSettings" />
+    <toRun name="zOrdo" type="LaunchSettings" />
+    <toRun name="zOrdo.DatabaseApi" type="LaunchSettings" />
     <method v="2" />
   </configuration>
 </component>
