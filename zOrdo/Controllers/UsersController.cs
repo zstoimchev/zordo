@@ -25,6 +25,7 @@ public class UsersController(IUserService userService) : ControllerBase
     [HttpGet("{email}")]
     public async Task<IActionResult> GetUserByEmailAsync(string email)
     {
+        // return Ok("success");
         var result = await userService.GetUserByEmailAsync(email);
         return Ok(result);
     }
