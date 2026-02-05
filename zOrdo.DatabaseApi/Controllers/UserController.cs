@@ -37,7 +37,7 @@ public class UsersController(IUserRepository userRepository, ILoggerFactory logg
             Email = "",
         };
         return Ok(user1);
-        var user = await userRepository.GetUserByEmailAsync(email);
+        var user = await userRepository.GetUserAsync(email);
         return user is null ? NotFound() : Ok(user);
     }
 

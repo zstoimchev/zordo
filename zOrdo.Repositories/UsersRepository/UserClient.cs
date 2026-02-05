@@ -10,12 +10,7 @@ public class UserClient(HttpClient client) : IUserRepository
     public async Task<User?> CreateUserAsync(User user)
     {
         var response = await client.PostAsJsonAsync(RequestUri, user);
-        if (!response.IsSuccessStatusCode)
-        {
-            // TODO: handle logging and error handling
-            return null;
-        }
-
+        response.EnsureSuccessStatusCode(); // todo: handle errors
         return await response.Content.ReadFromJsonAsync<User>();
     }
 
@@ -26,7 +21,7 @@ public class UserClient(HttpClient client) : IUserRepository
         return (await response.Content.ReadFromJsonAsync<User>())!;
     }
 
-    public async Task<User?> GetUserByEmailAsync(string email)
+    public async Task<User?> GetUserAsync(string email)
     {
         var response = await client.GetAsync($"{RequestUri}/{email}");
         response.EnsureSuccessStatusCode(); // todo: handle errors

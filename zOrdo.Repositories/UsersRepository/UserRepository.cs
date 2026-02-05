@@ -46,7 +46,7 @@ public class UserRepository(
         return (await connection.QuerySingleOrDefaultAsync<User>(sql, new { id = id }))!;
     }
 
-    public async Task<User?> GetUserByEmailAsync(string email)
+    public async Task<User?> GetUserAsync(string email)
     {
         using var connection = utils.CreateConnection();
         const string sql = "SELECT * FROM Users WHERE EMAIL = @email";
