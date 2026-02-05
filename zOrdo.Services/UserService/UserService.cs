@@ -11,13 +11,8 @@ public class UserService(
     {
         // check if user with the given email already exists. If yes, throw exception. If not, create user.
         var existingUser = await userRepository.GetUserByEmailAsync(user.Email);
-        if (existingUser != null) return null;
-
-        var createdUser = await userRepository.CreateUserAsync(user);
-
-        return createdUser == null
-            ? new ZordoResult<User>().CreateConflict("Failed to create user.")
-            : new ZordoResult<User>().CreateSuccess(createdUser);
+        if (existingUser != null) return null; // TODO: handle properly email already exists
+        return await userRepository.CreateUserAsync(user);
     }
 
     public async Task<User?> GetUserAsync(int id)
@@ -26,19 +21,15 @@ public class UserService(
         return result;
     }
 
-    public async Task<ZordoResult<User>> GetUserByEmailAsync(string email)
+    public async Task<User?> GetUserByEmailAsync(string email)
     {
-        var result = await userRepository.GetUserByEmailAsync(email);
-        return result == null
-            ? new ZordoResult<User>().CreateNotFound("User with the given email does not exist.")
-            : new ZordoResult<User>().CreateSuccess(result);
+        return await userRepository.GetUserByEmailAsync(email);
     }
 
-    public async Task<ZordoResult<User>> UpdateUserAsync(User userRequest, string email)
+    public async Task<User?> UpdateUserAsync(User userRequest, string email)
     {
         var existingUser = await userRepository.GetUserByEmailAsync(email);
-        if (existingUser == null)
-            return new ZordoResult<User>().CreateNotFound("User with the given email already exists.");
+        if (existingUser == null) return null;
 
         var updatedUser = new User
         {
@@ -47,8 +38,7 @@ public class UserService(
             Email = userRequest.Email ?? existingUser.Email,
         };
 
-        updatedUser = await userRepository.UpdateUserAsync(updatedUser, existingUser.Id);
-        return new ZordoResult<User>().CreateSuccess(updatedUser);
+        return await userRepository.UpdateUserAsync(updatedUser, existingUser.Id);
     }
 
     public Task<bool> DeleteUserAsync(string email)
