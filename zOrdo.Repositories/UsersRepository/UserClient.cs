@@ -11,7 +11,6 @@ public class UserClient(
 {
     private readonly ILogger<UserClient> _logger = loggerFactory.CreateLogger<UserClient>();
     private const string RequestUri = "api/users";
-    
 
     public async Task<User?> CreateUserAsync(User user)
     {
