@@ -1,14 +1,18 @@
+using Microsoft.Extensions.Logging;
 using zOrdo.Models.Models;
 using zOrdo.Repositories.UsersRepository;
 
 namespace zOrdo.Services.UserService;
 
 public class UserService(
-    IUserRepository userRepository
-) : IUserService
+    ILoggerFactory loggerFactory,
+    IUserRepository userRepository) : IUserService
 {
+    private readonly ILogger _logger = loggerFactory.CreateLogger<UserService>();
+    
     public async Task<ZordoResult<User>> CreateUserAsync(User user)
     {
+        _logger.LogDebug("Creating user.");
         var existingUser = await userRepository.GetUserAsync(user.Email);
         if (existingUser != null)
             return new ZordoResult<User>().CreateConflict("User with the given email already exists.");
