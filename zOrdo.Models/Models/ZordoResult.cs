@@ -4,15 +4,15 @@ namespace zOrdo.Models.Models;
 
 public class ZordoResult<T>
 {
-    public bool Success { get; set; }
+    public bool IsSuccessfull { get; set; }
     public string? Message { get; set; }
-    public T? Data { get; set; }
+    public T? Result { get; set; }
     public HttpStatusCode StatusCode { get; set; }
 
     public ZordoResult<T> CreateSuccess(T data, string? message = null)
     {
-        Success = true;
-        Data = data;
+        IsSuccessfull = true;
+        Result = data;
         Message = null;
         StatusCode = HttpStatusCode.OK;
         return this;
@@ -20,27 +20,27 @@ public class ZordoResult<T>
     
     public ZordoResult<T> CreateBadRequest(string message = "Bad Request")
     {
-        Success = false;
+        IsSuccessfull = false;
         Message = message;
-        Data = default;
+        Result = default;
         StatusCode = HttpStatusCode.BadRequest;
         return this;
     }
     
     public ZordoResult<T> CreateNotFound(string message = "Not found")
     {
-        Success = false;
+        IsSuccessfull = false;
         Message = message;
-        Data = default;
+        Result = default;
         StatusCode = HttpStatusCode.NotFound;
         return this;
     }
     
     public ZordoResult<T> CreateConflict(string message = "Conflict")
     {
-        Success = false;
+        IsSuccessfull = false;
         Message = message;
-        Data = default;
+        Result = default;
         StatusCode = HttpStatusCode.Conflict;
         return this;
     }

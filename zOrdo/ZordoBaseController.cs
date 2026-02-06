@@ -1,21 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
+using zOrdo.Models;
 using zOrdo.Models.Models;
 
 namespace zOrdo;
 
 public class ZordoBaseController : ControllerBase
 {
-    protected ActionResult OkOrConflict<T>(ZordoResult<T> itemResult)
+    protected ActionResult<T> MapToActionResult<T>(ZordoResult<T> zordoResult)
     {
-        return itemResult.Success
-            ? Ok(itemResult)
-            : Conflict(itemResult.Message);
-    }
+        if (zordoResult.IsSuccessfull)
+            return Ok(zordoResult.Result);
 
-    protected ActionResult OkOrNotFound<T>(ZordoResult<T> itemResult)
-    {
-        return itemResult.Success
-            ? Ok(itemResult)
-            : NotFound(itemResult.Message);
+        if (string.IsNullOrEmpty(zordoResult.Message))
+            return StatusCode((int)zordoResult.StatusCode);
+
+        return StatusCode((int)zordoResult.StatusCode, new ErrorResult { Message = zordoResult.Message });
     }
 }
