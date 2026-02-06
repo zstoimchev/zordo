@@ -2,4 +2,4 @@
 
 ### Your AI-assisted task scheduling and planning engine
 
-test
+TODO: add project description and vision.
