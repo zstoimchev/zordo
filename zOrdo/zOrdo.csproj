@@ -19,6 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\zOrdo.Middleware\zOrdo.Middleware.csproj" />
       <ProjectReference Include="..\zOrdo.Services\zOrdo.Services.csproj" />
     </ItemGroup>
 
