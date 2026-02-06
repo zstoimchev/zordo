@@ -12,11 +12,13 @@ public class UserService(
     
     public async Task<ZordoResult<User>> CreateUserAsync(User user)
     {
-        _logger.LogDebug("Creating user.");
+        _logger.LogInformation("Creating user.");
         var existingUser = await userRepository.GetUserAsync(user.Email);
         if (existingUser != null)
             return new ZordoResult<User>().CreateConflict("User with the given email already exists.");
+        _logger.LogInformation("No user found with email {Email}, proceeding to create user.", user.Email);
         var createdUser = await userRepository.CreateUserAsync(user);
+        // TODO: custom mapper, and map to customerResponseDto
         return createdUser != null
             ? new ZordoResult<User>().CreateSuccess(createdUser)
             : new ZordoResult<User>().CreateConflict("Failed to create user.");
