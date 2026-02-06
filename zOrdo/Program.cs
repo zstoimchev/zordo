@@ -1,4 +1,5 @@
 using Serilog;
+using zOrdo.Middleware;
 using zOrdo.Repositories;
 using zOrdo.Repositories.UsersRepository;
 using zOrdo.Services.UserService;
@@ -37,6 +38,8 @@ var app = builder.Build();
 app.UseSerilogRequestLogging();
 
 // Middleware
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
