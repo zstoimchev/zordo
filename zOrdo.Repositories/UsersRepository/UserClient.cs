@@ -12,7 +12,7 @@ public class UserClient(
     private readonly ILogger<UserClient> _logger = loggerFactory.CreateLogger<UserClient>();
     private const string RequestUri = "api/users";
 
-    private JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+    private readonly JsonSerializerOptions _jsonOptions = new()
     {
         PropertyNameCaseInsensitive = true
     };
@@ -24,11 +24,11 @@ public class UserClient(
         return JsonSerializer.Deserialize<User>(rawUser, _jsonOptions);
     }
 
-    public async Task<User?> GetUserAsync(long id)
+    public async Task<User?> GetUserAsync(int id)
     {
         var response = await client.GetAsync($"{RequestUri}/{id}");
         var rawUser = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<User>(rawUser);
+        return JsonSerializer.Deserialize<User>(rawUser, _jsonOptions);
     }
 
     public async Task<User?> GetUserAsync(string email)
@@ -36,7 +36,7 @@ public class UserClient(
         var response = await client.GetAsync($"{RequestUri}/{email}");
         var rawUser = await response.Content.ReadAsStringAsync();
         return !string.IsNullOrEmpty(rawUser)
-            ? JsonSerializer.Deserialize<User>(rawUser)
+            ? JsonSerializer.Deserialize<User>(rawUser, _jsonOptions)
             : null;
     }
 

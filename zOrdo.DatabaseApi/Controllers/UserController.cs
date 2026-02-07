@@ -19,8 +19,8 @@ public class UsersController(IUserRepository userRepository, ILoggerFactory logg
         return CreatedAtAction(nameof(GetUser), new { id = created.Id }, created);
     }
 
-    [HttpGet("{id:long}")]
-    public async Task<ActionResult<User>> GetUser(long id)
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<User>> GetUser(int id)
     {
         var user = await userRepository.GetUserAsync(id);
         return user is null ? NotFound() : Ok(user);

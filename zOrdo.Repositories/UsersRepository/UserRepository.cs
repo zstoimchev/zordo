@@ -39,10 +39,23 @@ public class UserRepository(
         return insertedId > 0 ? user : null;
     }
 
-    public async Task<User> GetUserAsync(long id)
+    public async Task<User?> GetUserAsync(int id)
     {
         using var connection = utils.CreateConnection();
-        const string sql = "SELECT * FROM Users WHERE Id = @id";
+        const string sql = """
+                           SELECT 
+                               ID               AS Id,
+                               FIRST_NAME       AS FirstName,
+                               MIDDLE_NAME      AS MiddleName,
+                               LAST_NAME        AS LastName,
+                               EMAIL            AS Email,
+                               PASSWORD_HASH    AS PasswordHash,
+                               INSERTED_ON_UTC  AS InsertedOnUtc,
+                               UPDATED_ON_UTC   AS UpdatedOnUtc,
+                               DELETED_ON_UTC   AS DeletedOnUtc,
+                               DELETED_BY       AS DeletedBy
+                           FROM Users WHERE Id = @id
+                           """;
         return (await connection.QuerySingleOrDefaultAsync<User>(sql, new { id = id }))!;
     }
 
