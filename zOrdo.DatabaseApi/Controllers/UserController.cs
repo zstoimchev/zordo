@@ -26,17 +26,9 @@ public class UsersController(IUserRepository userRepository, ILoggerFactory logg
         return user is null ? NotFound() : Ok(user);
     }
 
-    [HttpGet]
-    public async Task<ActionResult<User>> GetUserByEmail([FromQuery] string email)
+    [HttpGet("{email}")]
+    public async Task<ActionResult<User>> GetUserByEmail(string email)
     {
-        _logger.LogInformation("this is a test");
-        var user1 = new User()
-        {
-            FirstName = "John",
-            LastName = "Doe",
-            Email = "",
-        };
-        return Ok(user1);
         var user = await userRepository.GetUserAsync(email);
         return user is null ? NotFound() : Ok(user);
     }

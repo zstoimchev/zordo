@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
@@ -27,6 +28,8 @@ public class UserClient(
     public async Task<User?> GetUserAsync(int id)
     {
         var response = await client.GetAsync($"{RequestUri}/{id}");
+        if (response.StatusCode == HttpStatusCode.NotFound) return null;
+        response.EnsureSuccessStatusCode();
         var rawUser = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<User>(rawUser, _jsonOptions);
     }
@@ -34,10 +37,10 @@ public class UserClient(
     public async Task<User?> GetUserAsync(string email)
     {
         var response = await client.GetAsync($"{RequestUri}/{email}");
+        if (response.StatusCode == HttpStatusCode.NotFound) return null;
+        response.EnsureSuccessStatusCode();
         var rawUser = await response.Content.ReadAsStringAsync();
-        return !string.IsNullOrEmpty(rawUser)
-            ? JsonSerializer.Deserialize<User>(rawUser, _jsonOptions)
-            : null;
+        return JsonSerializer.Deserialize<User>(rawUser, _jsonOptions);
     }
 
     public async Task<User?> UpdateUserAsync(User user, int id)
