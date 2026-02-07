@@ -34,6 +34,8 @@ builder.Services.AddHttpClient<IUserRepository, UserClient>(client =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAutoMapper(_ => { }, typeof(MappingProfile));
+
 var app = builder.Build();
 app.UseSerilogRequestLogging();
 

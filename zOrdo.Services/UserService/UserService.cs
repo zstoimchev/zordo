@@ -1,27 +1,37 @@
+using AutoMapper;
 using Microsoft.Extensions.Logging;
+using zOrdo.Models;
 using zOrdo.Models.Models;
+using zOrdo.Models.Responses;
 using zOrdo.Repositories.UsersRepository;
 
 namespace zOrdo.Services.UserService;
 
 public class UserService(
     ILoggerFactory loggerFactory,
-    IUserRepository userRepository) : IUserService
+    IUserRepository userRepository,
+    IMapper mapper) : IUserService
 {
     private readonly ILogger _logger = loggerFactory.CreateLogger<UserService>();
     
-    public async Task<ZordoResult<User>> CreateUserAsync(User user)
+    public async Task<ZordoResult<UserResponse>> CreateUserAsync(User user)
     {
         _logger.LogInformation("Creating user.");
         var existingUser = await userRepository.GetUserAsync(user.Email);
         if (existingUser != null)
-            return new ZordoResult<User>().CreateConflict("User with the given email already exists.");
+            return new ZordoResult<UserResponse>().CreateConflict("User with the given email already exists.");
         _logger.LogInformation("No user found with email {Email}, proceeding to create user.", user.Email);
         var createdUser = await userRepository.CreateUserAsync(user);
         // TODO: custom mapper, and map to customerResponseDto
+        var result = mapper.Map<UserResponse>(createdUser);
         return createdUser != null
-            ? new ZordoResult<User>().CreateSuccess(createdUser)
-            : new ZordoResult<User>().CreateConflict("Failed to create user.");
+            ? new ZordoResult<UserResponse>().CreateSuccess(result)
+            : new ZordoResult<UserResponse>().CreateConflict("Failed to create user.");
+    }
+
+    public Task<Paginated<User>> GetUsersAsync(int pageNumber = 0, int pageSize = 50)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<ZordoResult<User>> GetUserAsync(int id)
@@ -32,7 +42,7 @@ public class UserService(
             : new ZordoResult<User>().CreateNotFound("User not found.");
     }
 
-    public async Task<ZordoResult<User>> GetUserByEmailAsync(string email)
+    public async Task<ZordoResult<User>> GetUserAsync(string email)
     {
         var result = await userRepository.GetUserAsync(email);
         return result != null
