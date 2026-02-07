@@ -14,9 +14,7 @@ public class UsersController(IUserRepository userRepository, ILoggerFactory logg
     public async Task<ActionResult<User>> CreateUser(User user)
     {
         var created = await userRepository.CreateUserAsync(user);
-        if (created is null) return BadRequest();
-
-        return CreatedAtAction(nameof(GetUser), new { id = created.Id }, created);
+        return created is null ? BadRequest() : Ok(created);
     }
 
     [HttpGet("{id:int}")]
