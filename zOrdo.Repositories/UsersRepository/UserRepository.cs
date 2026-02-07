@@ -29,7 +29,7 @@ public class UserRepository(
         var insertedId = await connection.ExecuteScalarAsync<int>(sql, new
         {
             first_name = user.FirstName,
-            middle_name = user.LastName,
+            middle_name = user.MiddleName,
             last_name = user.LastName,
             email = user.Email,
             inserted_on_utc = DateTime.UtcNow

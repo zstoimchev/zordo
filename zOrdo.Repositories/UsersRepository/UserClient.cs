@@ -12,18 +12,23 @@ public class UserClient(
     private readonly ILogger<UserClient> _logger = loggerFactory.CreateLogger<UserClient>();
     private const string RequestUri = "api/users";
 
+    private JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     public async Task<User?> CreateUserAsync(User user)
     {
         var response = await client.PostAsJsonAsync(RequestUri, user);
         var rawUser = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<User>(rawUser);
+        return JsonSerializer.Deserialize<User>(rawUser, _jsonOptions);
     }
 
-    public async Task<User> GetUserAsync(long id)
+    public async Task<User?> GetUserAsync(long id)
     {
         var response = await client.GetAsync($"{RequestUri}/{id}");
-        response.EnsureSuccessStatusCode(); // todo: handle errors
-        return (await response.Content.ReadFromJsonAsync<User>())!;
+        var rawUser = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<User>(rawUser);
     }
 
     public async Task<User?> GetUserAsync(string email)

@@ -17,7 +17,7 @@ public class UsersController(IUserService userService) : ZordoBaseController
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<User>> GetUserByIdAsync(int id)
+    public async Task<ActionResult<UserResponse>> GetUserByIdAsync(int id)
     {
         var result = await userService.GetUserAsync(id);
         return MapToActionResult(result);

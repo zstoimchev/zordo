@@ -7,3 +7,5 @@ riderModule.iml
 logs/*
 zOrdo/logs/*
 zOrdo.DatabaseApi/logs/*
+*.sln.DotSettings.user
+zOrdo.DatabaseApi/Data/zordo.db

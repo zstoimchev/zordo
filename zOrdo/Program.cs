@@ -1,6 +1,5 @@
 using Serilog;
 using zOrdo.Middleware;
-using zOrdo.Repositories;
 using zOrdo.Repositories.UsersRepository;
 using zOrdo.Services.UserService;
 
@@ -33,8 +32,6 @@ builder.Services.AddHttpClient<IUserRepository, UserClient>(client =>
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddAutoMapper(_ => { }, typeof(MappingProfile));
 
 var app = builder.Build();
 app.UseSerilogRequestLogging();
