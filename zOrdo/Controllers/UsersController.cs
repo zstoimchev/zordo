@@ -24,11 +24,10 @@ public class UsersController(IUserService userService) : ZordoBaseController
     }
 
     [HttpGet("{email}")]
-    public async Task<IActionResult> GetUserByEmailAsync(string email)
+    public async Task<ActionResult<UserResponse>> GetUserByEmailAsync(string email)
     {
-        // return Ok("success");
         var result = await userService.GetUserAsync(email);
-        return Ok(result);
+        return MapToActionResult(result);
     }
 
     [HttpPut("email")]

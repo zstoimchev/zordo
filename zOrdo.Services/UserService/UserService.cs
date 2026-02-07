@@ -43,7 +43,7 @@ public class UserService(
         var user = await userRepository.GetUserAsync(email);
         return user != null
             ? new ZordoResult<UserResponse>().CreateSuccess(new UserResponse().FromUserModel(user))
-            : new ZordoResult<UserResponse>().CreateConflict("Failed to create user.");
+            : new ZordoResult<UserResponse>().CreateNotFound("User not found.");
     }
 
     public async Task<ZordoResult<UserResponse>> UpdateUserAsync(User userRequest, string email)
