@@ -1,6 +1,5 @@
 using Serilog;
 using zOrdo.Middleware;
-using zOrdo.Repositories;
 using zOrdo.Repositories.UsersRepository;
 using zOrdo.Services.UserService;
 

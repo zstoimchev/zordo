@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
@@ -12,27 +13,34 @@ public class UserClient(
     private readonly ILogger<UserClient> _logger = loggerFactory.CreateLogger<UserClient>();
     private const string RequestUri = "api/users";
 
+    private readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     public async Task<User?> CreateUserAsync(User user)
     {
         var response = await client.PostAsJsonAsync(RequestUri, user);
         var rawUser = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<User>(rawUser);
+        return JsonSerializer.Deserialize<User>(rawUser, _jsonOptions);
     }
 
-    public async Task<User> GetUserAsync(long id)
+    public async Task<User?> GetUserAsync(int id)
     {
         var response = await client.GetAsync($"{RequestUri}/{id}");
-        response.EnsureSuccessStatusCode(); // todo: handle errors
-        return (await response.Content.ReadFromJsonAsync<User>())!;
+        if (response.StatusCode == HttpStatusCode.NotFound) return null;
+        response.EnsureSuccessStatusCode();
+        var rawUser = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<User>(rawUser, _jsonOptions);
     }
 
     public async Task<User?> GetUserAsync(string email)
     {
         var response = await client.GetAsync($"{RequestUri}/{email}");
+        if (response.StatusCode == HttpStatusCode.NotFound) return null;
+        response.EnsureSuccessStatusCode();
         var rawUser = await response.Content.ReadAsStringAsync();
-        return !string.IsNullOrEmpty(rawUser)
-            ? JsonSerializer.Deserialize<User>(rawUser)
-            : null;
+        return JsonSerializer.Deserialize<User>(rawUser, _jsonOptions);
     }
 
     public async Task<User?> UpdateUserAsync(User user, int id)

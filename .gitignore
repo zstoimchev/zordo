@@ -7,3 +7,10 @@ riderModule.iml
 logs/*
 zOrdo/logs/*
 zOrdo.DatabaseApi/logs/*
+*.sln.DotSettings.user
+zOrdo.DatabaseApi/Data/zordo.db
+
+.idea/.idea.zOrdo/.idea/dataSources.xml
+.idea/.idea.zOrdo/.idea/data_source_mapping.xml
+identifier.sqlite
+

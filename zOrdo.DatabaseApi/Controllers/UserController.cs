@@ -14,29 +14,19 @@ public class UsersController(IUserRepository userRepository, ILoggerFactory logg
     public async Task<ActionResult<User>> CreateUser(User user)
     {
         var created = await userRepository.CreateUserAsync(user);
-        if (created is null) return BadRequest();
-
-        return CreatedAtAction(nameof(GetUser), new { id = created.Id }, created);
+        return created is null ? BadRequest() : Ok(created);
     }
 
-    [HttpGet("{id:long}")]
-    public async Task<ActionResult<User>> GetUser(long id)
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<User>> GetUser(int id)
     {
         var user = await userRepository.GetUserAsync(id);
         return user is null ? NotFound() : Ok(user);
     }
 
-    [HttpGet]
-    public async Task<ActionResult<User>> GetUserByEmail([FromQuery] string email)
+    [HttpGet("{email}")]
+    public async Task<ActionResult<User>> GetUserByEmail(string email)
     {
-        _logger.LogInformation("this is a test");
-        var user1 = new User()
-        {
-            FirstName = "John",
-            LastName = "Doe",
-            Email = "",
-        };
-        return Ok(user1);
         var user = await userRepository.GetUserAsync(email);
         return user is null ? NotFound() : Ok(user);
     }

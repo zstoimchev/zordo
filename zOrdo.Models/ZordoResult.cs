@@ -1,17 +1,17 @@
 using System.Net;
 
-namespace zOrdo.Models.Models;
+namespace zOrdo.Models;
 
 public class ZordoResult<T>
 {
-    public bool IsSuccessfull { get; set; }
+    public bool IsSuccessful { get; set; }
     public string? Message { get; set; }
     public T? Result { get; set; }
     public HttpStatusCode StatusCode { get; set; }
 
     public ZordoResult<T> CreateSuccess(T data, string? message = null)
     {
-        IsSuccessfull = true;
+        IsSuccessful = true;
         Result = data;
         Message = null;
         StatusCode = HttpStatusCode.OK;
@@ -20,7 +20,7 @@ public class ZordoResult<T>
     
     public ZordoResult<T> CreateBadRequest(string message = "Bad Request")
     {
-        IsSuccessfull = false;
+        IsSuccessful = false;
         Message = message;
         Result = default;
         StatusCode = HttpStatusCode.BadRequest;
@@ -29,7 +29,7 @@ public class ZordoResult<T>
     
     public ZordoResult<T> CreateNotFound(string message = "Not found")
     {
-        IsSuccessfull = false;
+        IsSuccessful = false;
         Message = message;
         Result = default;
         StatusCode = HttpStatusCode.NotFound;
@@ -38,7 +38,7 @@ public class ZordoResult<T>
     
     public ZordoResult<T> CreateConflict(string message = "Conflict")
     {
-        IsSuccessfull = false;
+        IsSuccessful = false;
         Message = message;
         Result = default;
         StatusCode = HttpStatusCode.Conflict;
