@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using zOrdo.Models;
 using zOrdo.Models.Models;
 using zOrdo.Models.Responses;
 using zOrdo.Services.UserService;
@@ -13,6 +14,12 @@ public class UsersController(IUserService userService) : ZordoBaseController
     public async Task<ActionResult<UserResponse>> CreateUserAsync([FromBody] User user)
     {
         var result = await userService.CreateUserAsync(user);
+        return MapToActionResult(result);
+    }
+
+    public async Task<ActionResult<Paginated<UserResponse>>> GetUsersAsync()
+    {
+        var result = await userService.GetUsersAsync();
         return MapToActionResult(result);
     }
 
@@ -31,10 +38,10 @@ public class UsersController(IUserService userService) : ZordoBaseController
     }
 
     [HttpPut("email")]
-    public async Task<IActionResult> UpdateUserAsync([FromBody] User user, string email)
+    public async Task<ActionResult<UserResponse>> UpdateUserAsync([FromBody] User user, string email)
     {
         var result = await userService.UpdateUserAsync(user, email);
-        return Ok(result);
+        return MapToActionResult(result);
     }
 
     [HttpDelete("{email}")]
