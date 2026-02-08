@@ -4,9 +4,7 @@ using zOrdo.Models.Models;
 
 namespace zOrdo.Repositories.UsersRepository;
 
-public class UserRepository(
-    ISharedDatabaseUtils utils
-) : IUserRepository
+public class UserRepository(ISharedDatabaseUtils utils) : IUserRepository
 {
     public async Task<User?> CreateUserAsync(User user)
     {
@@ -27,16 +25,18 @@ public class UserRepository(
                            ) RETURNING ID
                            """;
 
+        var insertedOnUtc = DateTime.UtcNow;
         var insertedId = await connection.ExecuteScalarAsync<int>(sql, new
         {
             first_name = user.FirstName,
             middle_name = user.MiddleName,
             last_name = user.LastName,
             email = user.Email,
-            inserted_on_utc = DateTime.UtcNow
+            inserted_on_utc = insertedOnUtc
         });
 
         user.Id = insertedId;
+        user.InsertedOnUtc = insertedOnUtc;
         return insertedId > 0 ? user : null;
     }
 
