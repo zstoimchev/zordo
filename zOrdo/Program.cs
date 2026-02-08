@@ -1,6 +1,8 @@
 using Serilog;
 using zOrdo.Middleware;
+using zOrdo.Repositories.TodoItemRepository;
 using zOrdo.Repositories.UsersRepository;
+using zOrdo.Services.TodoItemService;
 using zOrdo.Services.UserService;
 
 Console.WriteLine("***********************************************************************************");
@@ -16,15 +18,17 @@ builder.Services.AddControllers();
 
 // Add services to the container
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<ITodoItemService, TodoItemService>();
 
 // Add repositories to the container
 builder.Services.AddTransient<IUserRepository, UserClient>();
+builder.Services.AddTransient<ITodoItemRepository, TodoItemClient>();
 
 // Configure Http Clients
-builder.Services.AddHttpClient<IUserRepository, UserClient>(client =>
+builder.Services.AddHttpClient("zOrdo.DatabaseApi", client =>
 {
-    var baseUrl = 
-        builder.Configuration["Clients:DatabaseApi:BaseUrl"] ?? 
+    var baseUrl =
+        builder.Configuration["Clients:DatabaseApi:BaseUrl"] ??
         throw new InvalidOperationException("Missing DatabaseApi BaseUrl");
     client.BaseAddress = new Uri(baseUrl);
 });

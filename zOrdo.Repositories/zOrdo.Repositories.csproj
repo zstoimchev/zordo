@@ -7,16 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="TasksRepository\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\zOrdo.Models\zOrdo.Models.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Dapper" Version="2.1.66" />
       <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.2" />
+      <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.2" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.2" />
     </ItemGroup>
 
