@@ -35,11 +35,11 @@ command -v sqlite3 >/dev/null || { echo "❌ sqlite3 not installed"; exit 1; }
 
 # Ensure version table exists (bootstrap safety)
 sqlite3 "$DB_FILE" <<'SQL'
-CREATE TABLE IF NOT EXISTS db_version (
-    version_id      INTEGER PRIMARY KEY AUTOINCREMENT,
-    version_name    TEXT    NOT NULL UNIQUE,
-    applied_on_utc  TEXT    NOT NULL,
-    success         INTEGER NOT NULL CHECK (success IN (0,1))
+CREATE TABLE IF NOT EXISTS DB_VERSION (
+    VERSION_ID      INTEGER PRIMARY KEY AUTOINCREMENT,
+    VERSION_NAME    TEXT    NOT NULL UNIQUE,
+    APPLIED_ON_UTC  TEXT    NOT NULL,
+    SUCCESS         INTEGER NOT NULL CHECK (success IN (0,1))
 );
 SQL
 
@@ -55,7 +55,7 @@ for migration_file in $(find "$MIGRATIONS_DIR" -name "*.sql" | sort); do
     echo -e "${BLUE}Processing: $filename${NC}"
 
     already_applied=$(sqlite3 "$DB_FILE" \
-        "SELECT COUNT(*) FROM db_version WHERE version_name='$migration_name';")
+        "SELECT COUNT(*) FROM DB_VERSION WHERE VERSION_NAME='$migration_name';")
 
     if [ "$already_applied" = "1" ]; then
         echo -e "${YELLOW}⏭️  Already applied${NC}"
@@ -65,13 +65,13 @@ for migration_file in $(find "$MIGRATIONS_DIR" -name "*.sql" | sort); do
 
     if sqlite3 "$DB_FILE" < "$migration_file"; then
         sqlite3 "$DB_FILE" \
-            "INSERT INTO db_version (version_name, applied_on_utc, success)
+            "INSERT INTO DB_VERSION (VERSION_NAME, APPLIED_ON_UTC, SUCCESS)
              VALUES ('$migration_name', datetime('now'), 1);"
         echo -e "${GREEN}✅ Successfully applied${NC}"
         ((++APPLIED_COUNT))
     else
         sqlite3 "$DB_FILE" \
-            "INSERT INTO db_version (version_name, applied_on_utc, success)
+            "INSERT INTO DB_VERSION (VERSION_NAME, APPLIED_ON_UTC, SUCCESS)
              VALUES ('$migration_name', datetime('now'), 0);"
         echo -e "${RED}❌ Failed to apply${NC}"
         ((++FAILED_COUNT))
