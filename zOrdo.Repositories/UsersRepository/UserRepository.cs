@@ -1,11 +1,10 @@
 using Dapper;
+using zOrdo.Models;
 using zOrdo.Models.Models;
 
 namespace zOrdo.Repositories.UsersRepository;
 
-public class UserRepository(
-    ISharedDatabaseUtils utils
-) : IUserRepository
+public class UserRepository(ISharedDatabaseUtils utils) : IUserRepository
 {
     public async Task<User?> CreateUserAsync(User user)
     {
@@ -26,17 +25,53 @@ public class UserRepository(
                            ) RETURNING ID
                            """;
 
+        var insertedOnUtc = DateTime.UtcNow;
         var insertedId = await connection.ExecuteScalarAsync<int>(sql, new
         {
             first_name = user.FirstName,
             middle_name = user.MiddleName,
             last_name = user.LastName,
             email = user.Email,
-            inserted_on_utc = DateTime.UtcNow
+            inserted_on_utc = insertedOnUtc
         });
 
         user.Id = insertedId;
+        user.InsertedOnUtc = insertedOnUtc;
         return insertedId > 0 ? user : null;
+    }
+
+    public async Task<Paginated<User>> GetUsersAsync(int pageNumber, int pageSize)
+    {
+        using var connection = utils.CreateConnection();
+        
+        const string sql = """
+                           SELECT 
+                               ID               AS Id,
+                               FIRST_NAME       AS FirstName,
+                               MIDDLE_NAME      AS MiddleName,
+                               LAST_NAME        AS LastName,
+                               EMAIL            AS Email,
+                               PASSWORD_HASH    AS PasswordHash,
+                               INSERTED_ON_UTC  AS InsertedOnUtc,
+                               UPDATED_ON_UTC   AS UpdatedOnUtc,
+                               DELETED_ON_UTC   AS DeletedOnUtc,
+                               DELETED_BY       AS DeletedBy
+                           FROM Users 
+                           WHERE DELETED_ON_UTC IS NULL
+                           ORDER BY INSERTED_ON_UTC DESC
+                           LIMIT @page_size OFFSET @offset
+                           """;
+        
+        var users = 
+            await connection.QueryAsync<User>(sql, new { page_size = pageSize, offset = (pageNumber - 1) * pageSize });
+        
+        return new Paginated<User>
+        {
+            Items = users.ToList(),
+            // TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
     }
 
     public async Task<User?> GetUserAsync(int id)
@@ -87,16 +122,18 @@ public class UserRepository(
                                FIRST_NAME = @first_name,
                                MIDDLE_NAME = @middle_name,
                                LAST_NAME = @last_name,
-                               EMAIL = @email
+                               EMAIL = @email,
+                               UPDATED_ON_UTC = @updated_on_utc
                            WHERE ID = @id
                            """;
 
         var rowsAffected = await connection.ExecuteAsync(sql, new
         {
             first_name = user.FirstName,
-            middle_name = user.LastName,
+            middle_name = user.MiddleName,
             last_name = user.LastName,
             email = user.Email,
+            updated_on_utc = DateTime.UtcNow,
             id = id
         });
 

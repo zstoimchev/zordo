@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using zOrdo.Models;
-using zOrdo.Models.Models;
 
 namespace zOrdo;
 
-public class ZordoBaseController : ControllerBase
+public class BaseController : ControllerBase
 {
     protected ActionResult<T> MapToActionResult<T>(ZordoResult<T> zordoResult)
     {

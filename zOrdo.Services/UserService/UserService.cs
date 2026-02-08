@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using zOrdo.Models;
 using zOrdo.Models.Models;
+using zOrdo.Models.Requests;
 using zOrdo.Models.Responses;
 using zOrdo.Repositories.UsersRepository;
 
@@ -12,22 +13,32 @@ public class UserService(
 {
     private readonly ILogger _logger = loggerFactory.CreateLogger<UserService>();
 
-    public async Task<ZordoResult<UserResponse>> CreateUserAsync(User user)
+    public async Task<ZordoResult<UserResponse>> CreateUserAsync(UserRequest user)
     {
         var existingUser = await userRepository.GetUserAsync(user.Email);
         if (existingUser != null)
             return new ZordoResult<UserResponse>().CreateConflict("User with the given email already exists.");
         _logger.LogInformation("No user found with the given email, proceeding to create a new user: {@User}", user);
-        var createdUser = await userRepository.CreateUserAsync(user);
+        var userModel = new User().FromUserRequest(user);
+        var createdUser = await userRepository.CreateUserAsync(userModel);
+        // validate user model
         _logger.LogInformation("Created new user: {@User}", createdUser);
         return createdUser != null
             ? new ZordoResult<UserResponse>().CreateSuccess(new UserResponse().FromUserModel(createdUser))
             : new ZordoResult<UserResponse>().CreateConflict("Failed to create user.");
     }
 
-    public Task<Paginated<UserResponse>> GetUsersAsync(int pageNumber = 0, int pageSize = 50)
+    public async Task<ZordoResult<Paginated<UserResponse>>> GetUsersAsync(int pageNumber, int pageSize)
     {
-        throw new NotImplementedException();
+        var paginatedUsers = await userRepository.GetUsersAsync(pageNumber, pageSize);
+        var paginatedResult = new Paginated<UserResponse>
+        {
+            Items = paginatedUsers.Items.Select(user => new UserResponse().FromUserModel(user)).ToList(),
+            TotalCount = paginatedUsers.TotalCount,
+            PageNumber = paginatedUsers.PageNumber,
+            PageSize = paginatedUsers.PageSize
+        };
+        return new ZordoResult<Paginated<UserResponse>>().CreateSuccess(paginatedResult);
     }
 
     public async Task<ZordoResult<UserResponse>> GetUserAsync(int id)
@@ -46,7 +57,7 @@ public class UserService(
             : new ZordoResult<UserResponse>().CreateNotFound("User not found.");
     }
 
-    public async Task<ZordoResult<UserResponse>> UpdateUserAsync(User userRequest, string email)
+    public async Task<ZordoResult<UserResponse>> UpdateUserAsync(UserRequest userRequest, string email)
     {
         var existingUser = await userRepository.GetUserAsync(email);
         if (existingUser == null) return new ZordoResult<UserResponse>().CreateNotFound("Requested user not found.");
