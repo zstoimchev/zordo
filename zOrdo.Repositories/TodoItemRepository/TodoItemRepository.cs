@@ -67,9 +67,14 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
                            ORDER BY INSERTED_ON_UTC DESC
                            LIMIT @page_size OFFSET @offset
                            """;
-        
-        var result = 
-            await connection.QueryAsync<TodoItem>(sql, new { page_size = pageSize, offset = (pageNumber - 1) * pageSize });
+
+        var result =
+            await connection.QueryAsync<TodoItem>(sql, new
+            {
+                user_id = userId,
+                page_size = pageSize, 
+                offset = (pageNumber - 1) * pageSize
+            });
         
         return new Paginated<TodoItem>
         {

@@ -14,7 +14,7 @@ public class TodoItemClient(
 {
     private readonly ILogger<UserClient> _logger = loggerFactory.CreateLogger<UserClient>();
     private readonly HttpClient _client = httpClientFactory.CreateClient("zOrdo.DatabaseApi");
-    private const string RequestUri = "api/users";
+    private const string RequestUri = "api/todoItem";
 
     private readonly JsonSerializerOptions _jsonOptions = new()
     {
@@ -23,7 +23,7 @@ public class TodoItemClient(
 
     public async Task<TodoItem?> CreateTodoItemAsync(int userId, TodoItem todoItemRequest)
     {
-        var response = await _client.PostAsJsonAsync($"RequestUri/{userId}", todoItemRequest);
+        var response = await _client.PostAsJsonAsync($"{RequestUri}/{userId}", todoItemRequest);
         var rawResponse = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<TodoItem>(rawResponse, _jsonOptions);
     }
