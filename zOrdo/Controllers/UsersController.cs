@@ -8,7 +8,7 @@ namespace zOrdo.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UsersController(IUserService userService) : ZordoBaseController
+public class UsersController(IUserService userService) : BaseController
 {
     [HttpPost]
     public async Task<ActionResult<UserResponse>> CreateUserAsync([FromBody] User user)
