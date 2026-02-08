@@ -122,16 +122,18 @@ public class UserRepository(ISharedDatabaseUtils utils) : IUserRepository
                                FIRST_NAME = @first_name,
                                MIDDLE_NAME = @middle_name,
                                LAST_NAME = @last_name,
-                               EMAIL = @email
+                               EMAIL = @email,
+                               UPDATED_ON_UTC = @updated_on_utc
                            WHERE ID = @id
                            """;
 
         var rowsAffected = await connection.ExecuteAsync(sql, new
         {
             first_name = user.FirstName,
-            middle_name = user.LastName,
+            middle_name = user.MiddleName,
             last_name = user.LastName,
             email = user.Email,
+            updated_on_utc = DateTime.UtcNow,
             id = id
         });
 

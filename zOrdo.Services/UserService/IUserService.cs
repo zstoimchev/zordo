@@ -1,5 +1,6 @@
 using zOrdo.Models;
 using zOrdo.Models.Models;
+using zOrdo.Models.Requests;
 using zOrdo.Models.Responses;
 using Task = System.Threading.Tasks.Task;
 
@@ -7,7 +8,7 @@ namespace zOrdo.Services.UserService;
 
 public interface IUserService
 {
-    public Task<ZordoResult<UserResponse>> CreateUserAsync(User user);
+    public Task<ZordoResult<UserResponse>> CreateUserAsync(UserRequest user);
     public Task<ZordoResult<Paginated<UserResponse>>> GetUsersAsync(int pageNumber, int pageSize);
     public Task<ZordoResult<UserResponse>> GetUserAsync(int id);
     public Task<ZordoResult<UserResponse>> GetUserAsync(string email);

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using zOrdo.Models;
 using zOrdo.Models.Models;
+using zOrdo.Models.Requests;
 using zOrdo.Models.Responses;
 using zOrdo.Services.UserService;
 
@@ -11,7 +12,7 @@ namespace zOrdo.Controllers;
 public class UsersController(IUserService userService) : BaseController
 {
     [HttpPost]
-    public async Task<ActionResult<UserResponse>> CreateUserAsync([FromBody] User user)
+    public async Task<ActionResult<UserResponse>> CreateUserAsync([FromBody] UserRequest user)
     {
         var result = await userService.CreateUserAsync(user);
         return MapToActionResult(result);

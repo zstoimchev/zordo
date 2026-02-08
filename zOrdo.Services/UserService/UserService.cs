@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using zOrdo.Models;
 using zOrdo.Models.Models;
+using zOrdo.Models.Requests;
 using zOrdo.Models.Responses;
 using zOrdo.Repositories.UsersRepository;
 
@@ -12,13 +13,15 @@ public class UserService(
 {
     private readonly ILogger _logger = loggerFactory.CreateLogger<UserService>();
 
-    public async Task<ZordoResult<UserResponse>> CreateUserAsync(User user)
+    public async Task<ZordoResult<UserResponse>> CreateUserAsync(UserRequest user)
     {
         var existingUser = await userRepository.GetUserAsync(user.Email);
         if (existingUser != null)
             return new ZordoResult<UserResponse>().CreateConflict("User with the given email already exists.");
         _logger.LogInformation("No user found with the given email, proceeding to create a new user: {@User}", user);
-        var createdUser = await userRepository.CreateUserAsync(user);
+        var userModel = new User().FromUserRequest(user);
+        var createdUser = await userRepository.CreateUserAsync(userModel);
+        // validate user model
         _logger.LogInformation("Created new user: {@User}", createdUser);
         return createdUser != null
             ? new ZordoResult<UserResponse>().CreateSuccess(new UserResponse().FromUserModel(createdUser))
