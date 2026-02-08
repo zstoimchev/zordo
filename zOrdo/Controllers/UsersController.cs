@@ -39,7 +39,7 @@ public class UsersController(IUserService userService) : BaseController
         return MapToActionResult(result);
     }
 
-    [HttpPut("email")]
+    [HttpPut("{email}")]
     public async Task<ActionResult<UserResponse>> UpdateUserAsync([FromBody] User user, string email)
     {
         var result = await userService.UpdateUserAsync(user, email);
