@@ -25,9 +25,17 @@ public class UserService(
             : new ZordoResult<UserResponse>().CreateConflict("Failed to create user.");
     }
 
-    public Task<ZordoResult<Paginated<UserResponse>>> GetUsersAsync(int pageNumber = 0, int pageSize = 50)
+    public async Task<ZordoResult<Paginated<UserResponse>>> GetUsersAsync(int pageNumber, int pageSize)
     {
-        throw new NotImplementedException();
+        var paginatedUsers = await userRepository.GetUsersAsync(pageNumber, pageSize);
+        var paginatedResult = new Paginated<UserResponse>
+        {
+            Items = paginatedUsers.Items.Select(user => new UserResponse().FromUserModel(user)).ToList(),
+            TotalCount = paginatedUsers.TotalCount,
+            PageNumber = paginatedUsers.PageNumber,
+            PageSize = paginatedUsers.PageSize
+        };
+        return new ZordoResult<Paginated<UserResponse>>().CreateSuccess(paginatedResult);
     }
 
     public async Task<ZordoResult<UserResponse>> GetUserAsync(int id)

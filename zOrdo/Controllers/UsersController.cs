@@ -17,9 +17,11 @@ public class UsersController(IUserService userService) : ZordoBaseController
         return MapToActionResult(result);
     }
 
-    public async Task<ActionResult<Paginated<UserResponse>>> GetUsersAsync()
+    [HttpGet]
+    public async Task<ActionResult<Paginated<UserResponse>>> GetUsersAsync(
+        [FromQuery] int pageNumber = 0, [FromQuery] int pageSize = 10)
     {
-        var result = await userService.GetUsersAsync();
+        var result = await userService.GetUsersAsync(pageNumber, pageSize);
         return MapToActionResult(result);
     }
 

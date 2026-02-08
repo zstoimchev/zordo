@@ -1,4 +1,5 @@
 using Dapper;
+using zOrdo.Models;
 using zOrdo.Models.Models;
 
 namespace zOrdo.Repositories.UsersRepository;
@@ -37,6 +38,40 @@ public class UserRepository(
 
         user.Id = insertedId;
         return insertedId > 0 ? user : null;
+    }
+
+    public async Task<Paginated<User>> GetUsersAsync(int pageNumber, int pageSize)
+    {
+        using var connection = utils.CreateConnection();
+        
+        const string sql = """
+                           SELECT 
+                               ID               AS Id,
+                               FIRST_NAME       AS FirstName,
+                               MIDDLE_NAME      AS MiddleName,
+                               LAST_NAME        AS LastName,
+                               EMAIL            AS Email,
+                               PASSWORD_HASH    AS PasswordHash,
+                               INSERTED_ON_UTC  AS InsertedOnUtc,
+                               UPDATED_ON_UTC   AS UpdatedOnUtc,
+                               DELETED_ON_UTC   AS DeletedOnUtc,
+                               DELETED_BY       AS DeletedBy
+                           FROM Users 
+                           WHERE DELETED_ON_UTC IS NULL
+                           ORDER BY INSERTED_ON_UTC DESC
+                           LIMIT @page_size OFFSET @offset
+                           """;
+        
+        var users = 
+            await connection.QueryAsync<User>(sql, new { page_size = pageSize, offset = (pageNumber - 1) * pageSize });
+        
+        return new Paginated<User>
+        {
+            Items = users.ToList(),
+            // TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
     }
 
     public async Task<User?> GetUserAsync(int id)

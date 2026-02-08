@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using zOrdo.Models;
 using zOrdo.Models.Models;
 
 namespace zOrdo.Repositories.UsersRepository;
@@ -25,6 +26,14 @@ public class UserClient(
         return JsonSerializer.Deserialize<User>(rawUser, _jsonOptions);
     }
 
+    public async Task<Paginated<User>> GetUsersAsync(int pageNumber, int pageSize)
+    {
+        var response = await client.GetAsync($"{RequestUri}?pageNumber={pageNumber}&pageSize={pageSize}");
+        response.EnsureSuccessStatusCode();
+        var rawUser = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<Paginated<User>>(rawUser, _jsonOptions)!;
+    }
+    
     public async Task<User?> GetUserAsync(int id)
     {
         var response = await client.GetAsync($"{RequestUri}/{id}");

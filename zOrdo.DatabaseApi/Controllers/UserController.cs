@@ -17,6 +17,13 @@ public class UsersController(IUserRepository userRepository, ILoggerFactory logg
         return created is null ? BadRequest() : Ok(created);
     }
 
+    [HttpGet]
+    public async Task<ActionResult<User>> GetUsers([FromQuery] int pageNumber = 0, [FromQuery] int pageSize = 50)
+    {
+        var user = await userRepository.GetUsersAsync(pageNumber, pageSize);
+        return Ok(user);
+    }
+    
     [HttpGet("{id:int}")]
     public async Task<ActionResult<User>> GetUser(int id)
     {
