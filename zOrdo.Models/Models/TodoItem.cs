@@ -1,4 +1,5 @@
 using zOrdo.Models.Enums;
+using zOrdo.Models.Requests;
 
 namespace zOrdo.Models.Models;
 
@@ -11,4 +12,15 @@ public class TodoItem : SharedDbProperties
     public Status Status { get; set; }
     public DateTime DueDateUtc { get; set; }
     public DateTime CompletedOnUtc { get; set; }
+
+    public TodoItem FromRequest(int userId, TodoItemRequest todoItemRequest)
+    {
+        UserId = userId;
+        Title = todoItemRequest.Title;
+        Description = todoItemRequest.Description;
+        Priority = todoItemRequest.Priority;
+        Status = Status.Pending;
+        DueDateUtc = todoItemRequest.DueDateUtc;
+        return this;
+    }
 }

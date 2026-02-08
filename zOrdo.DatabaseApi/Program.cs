@@ -1,5 +1,6 @@
 using Serilog;
 using zOrdo.Repositories;
+using zOrdo.Repositories.TodoItemRepository;
 using zOrdo.Repositories.UsersRepository;
 
 Console.WriteLine("****************************************************");
@@ -21,6 +22,7 @@ builder.Services.AddSingleton<ISharedDatabaseUtils>(new SharedDatabaseUtils(conn
 
 // Add repositories to the container
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<ITodoItemRepository, TodoItemRepository>();
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();

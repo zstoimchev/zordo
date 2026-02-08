@@ -1,6 +1,59 @@
+using System.Net.Http.Json;
+using System.Text.Json;
+using Microsoft.Extensions.Logging;
+using zOrdo.Models;
+using zOrdo.Models.Models;
+using zOrdo.Models.Requests;
+using zOrdo.Repositories.UsersRepository;
+
 namespace zOrdo.Repositories.TodoItemRepository;
 
-public class TodoItemClient : ITodoItemRepository
+public class TodoItemClient(
+    ILoggerFactory loggerFactory,
+    IHttpClientFactory httpClientFactory) : ITodoItemRepository
 {
-    
+    private readonly ILogger<UserClient> _logger = loggerFactory.CreateLogger<UserClient>();
+    private readonly HttpClient _client = httpClientFactory.CreateClient("zOrdo.DatabaseApi");
+    private const string RequestUri = "api/users";
+
+    private readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
+    public async Task<TodoItem?> CreateTodoItemAsync(int userId, TodoItem todoItemRequest)
+    {
+        var response = await _client.PostAsJsonAsync($"RequestUri/{userId}", todoItemRequest);
+        var rawResponse = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<TodoItem>(rawResponse, _jsonOptions);
+    }
+
+    public async Task<Paginated<TodoItem>> GetTodoItemsAsync(int userId, int pageNumber, int pageSize)
+    {
+        var requestUri = $"{RequestUri}/{userId}?pageNumber={pageNumber}&pageSize={pageSize}";
+        var response = await _client.GetAsync(requestUri);
+        response.EnsureSuccessStatusCode();
+        var rawResponse = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<Paginated<TodoItem>>(rawResponse, _jsonOptions)!;
+    }
+
+    public Task<TodoItem> GetTTodoItemAsync(string userEmail, int taskId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<TodoItem> UpdateTodoItemAsync(string userEmail, TodoItemRequest todoItemRequest, int taskId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> DeleteTodoItemAsync(string userEmail, int taskId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> CompleteTodoItemAsync(string userEmail, int taskId)
+    {
+        throw new NotImplementedException();
+    }
 }
