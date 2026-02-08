@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using zOrdo.Models;
-using zOrdo.Models.Models;
 using zOrdo.Models.Requests;
 using zOrdo.Models.Responses;
 using zOrdo.Services.UserService;
@@ -41,7 +40,7 @@ public class UsersController(IUserService userService) : BaseController
     }
 
     [HttpPut("{email}")]
-    public async Task<ActionResult<UserResponse>> UpdateUserAsync([FromBody] User user, string email)
+    public async Task<ActionResult<UserResponse>> UpdateUserAsync([FromBody] UserRequest user, string email)
     {
         var result = await userService.UpdateUserAsync(user, email);
         return MapToActionResult(result);

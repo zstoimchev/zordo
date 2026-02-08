@@ -57,7 +57,7 @@ public class UserService(
             : new ZordoResult<UserResponse>().CreateNotFound("User not found.");
     }
 
-    public async Task<ZordoResult<UserResponse>> UpdateUserAsync(User userRequest, string email)
+    public async Task<ZordoResult<UserResponse>> UpdateUserAsync(UserRequest userRequest, string email)
     {
         var existingUser = await userRepository.GetUserAsync(email);
         if (existingUser == null) return new ZordoResult<UserResponse>().CreateNotFound("Requested user not found.");
