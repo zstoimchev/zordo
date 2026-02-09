@@ -4,4 +4,4 @@
 ------------------------------------------------------------------------------
 
 -- Intentionally empty.
--- db_version is created by the runner to guarantee availability.
+-- DB_VERSION is created by the runner to guarantee availability.

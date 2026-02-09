@@ -1,6 +1,6 @@
-namespace zOrdo.Models.Models;
+namespace zOrdo.Models;
 
-public class SharedProperties
+public class SharedDbProperties
 {
     /// <summary>
     /// Primary key identifier

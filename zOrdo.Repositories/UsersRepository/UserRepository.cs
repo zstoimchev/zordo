@@ -10,7 +10,7 @@ public class UserRepository(ISharedDatabaseUtils utils) : IUserRepository
     {
         using var connection = utils.CreateConnection();
         const string sql = """
-                           INSERT INTO Users (
+                           INSERT INTO USERS (
                                               FIRST_NAME, 
                                               MIDDLE_NAME, 
                                               LAST_NAME, 
@@ -56,7 +56,7 @@ public class UserRepository(ISharedDatabaseUtils utils) : IUserRepository
                                UPDATED_ON_UTC   AS UpdatedOnUtc,
                                DELETED_ON_UTC   AS DeletedOnUtc,
                                DELETED_BY       AS DeletedBy
-                           FROM Users 
+                           FROM USERS 
                            WHERE DELETED_ON_UTC IS NULL
                            ORDER BY INSERTED_ON_UTC DESC
                            LIMIT @page_size OFFSET @offset
@@ -89,7 +89,7 @@ public class UserRepository(ISharedDatabaseUtils utils) : IUserRepository
                                UPDATED_ON_UTC   AS UpdatedOnUtc,
                                DELETED_ON_UTC   AS DeletedOnUtc,
                                DELETED_BY       AS DeletedBy
-                           FROM Users WHERE Id = @id
+                           FROM USERS WHERE ID = @id
                            """;
         return (await connection.QuerySingleOrDefaultAsync<User>(sql, new { id = id }))!;
     }
@@ -109,7 +109,7 @@ public class UserRepository(ISharedDatabaseUtils utils) : IUserRepository
                                UPDATED_ON_UTC   AS UpdatedOnUtc,
                                DELETED_ON_UTC   AS DeletedOnUtc,
                                DELETED_BY       AS DeletedBy
-                           FROM Users WHERE EMAIL = @email
+                           FROM USERS WHERE EMAIL = @email
                            """;
         return await connection.QuerySingleOrDefaultAsync<User>(sql, new { email = email });
     }
@@ -118,7 +118,7 @@ public class UserRepository(ISharedDatabaseUtils utils) : IUserRepository
     {
         using var connection = utils.CreateConnection();
         const string sql = """
-                           UPDATE Users SET 
+                           UPDATE USERS SET 
                                FIRST_NAME = @first_name,
                                MIDDLE_NAME = @middle_name,
                                LAST_NAME = @last_name,
@@ -143,7 +143,7 @@ public class UserRepository(ISharedDatabaseUtils utils) : IUserRepository
     public async Task<bool> DeleteUserAsync(int id)
     {
         using var connection = utils.CreateConnection();
-        const string sql = "DELETE FROM Users WHERE Id = @id";
+        const string sql = "DELETE FROM USERS WHERE ID = @id";
         var rowsAffected = await connection.ExecuteAsync(sql, new { id = id });
         return rowsAffected != 0;
     }

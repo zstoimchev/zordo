@@ -5,7 +5,7 @@ using zOrdo.Repositories.UsersRepository;
 namespace zOrdo.DatabaseApi.Controllers;
 
 [ApiController]
-[Route("api/users")]
+[Route("api/[controller]")]
 public class UsersController(IUserRepository userRepository) : ControllerBase
 {
     [HttpPost]
