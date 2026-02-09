@@ -1,6 +1,7 @@
 using Serilog;
 using zOrdo.Middleware;
 using zOrdo.Repositories.UsersRepository;
+using zOrdo.Services.AuthService;
 using zOrdo.Services.UserService;
 
 Console.WriteLine("***********************************************************************************");
@@ -16,6 +17,7 @@ builder.Services.AddControllers();
 
 // Add services to the container
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IAuthService, AuthService>();
 
 // Add repositories to the container
 builder.Services.AddTransient<IUserRepository, UserClient>();
