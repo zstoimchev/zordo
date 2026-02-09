@@ -50,7 +50,7 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
     public async Task<Paginated<TodoItem>> GetTodoItemsAsync(int userId, int pageNumber, int pageSize)
     {
         using var connection = utils.CreateConnection();
-        
+
         const string sql = """
                            SELECT 
                                ID               AS Id,
@@ -72,10 +72,10 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
             await connection.QueryAsync<TodoItem>(sql, new
             {
                 user_id = userId,
-                page_size = pageSize, 
+                page_size = pageSize,
                 offset = (pageNumber - 1) * pageSize
             });
-        
+
         return new Paginated<TodoItem>
         {
             Items = result.ToList(),
@@ -85,9 +85,27 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
         };
     }
 
-    public Task<TodoItem> GetTTodoItemAsync(string userEmail, int taskId)
+    public async Task<TodoItem?> GetTodoItemAsync(int userId, int taskId)
     {
-        throw new NotImplementedException();
+        using var connection = utils.CreateConnection();
+
+        const string sql = """
+                           SELECT 
+                               ID               AS Id,
+                               USER_ID          AS UserId,
+                               TITLE            AS Title,
+                               DESCRIPTION      AS Description,
+                               PRIORITY         AS Priority,
+                               INSERTED_ON_UTC  AS InsertedOnUtc,
+                               DUE_DATE_UTC     AS DueDateUtc,
+                               STATUS           AS Status
+                           FROM TODO_ITEMS
+                           WHERE DELETED_ON_UTC IS NULL
+                                AND USER_ID = @user_id
+                           """;
+
+        var result = await connection.QueryFirstOrDefaultAsync<TodoItem>(sql, new { user_id = userId });
+        return result;
     }
 
     public Task<TodoItem> UpdateTodoItemAsync(string userEmail, TodoItemRequest todoItemRequest, int taskId)

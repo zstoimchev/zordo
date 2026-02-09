@@ -49,9 +49,14 @@ public class TodoItemService(
         return new ZordoResult<Paginated<TodoItemResponse>>().CreateSuccess(paginatedResult);
     }
 
-    public Task<TodoItemResponse> GetTodoItemAsync(string userEmail, int taskId)
+    public async Task<ZordoResult<TodoItemResponse>> GetTodoItemAsync(string userEmail, int taskId)
     {
-        throw new NotImplementedException();
+        var user = await userRepository.GetUserAsync(userEmail);
+        if (user == null) return new ZordoResult<TodoItemResponse>().CreateConflict("User not found");
+        var todoItemResponse = await todoItemRepository.GetTodoItemAsync(user.Id, taskId);
+        if (todoItemResponse == null) return new ZordoResult<TodoItemResponse>().CreateNotFound("Could not find task.");
+        var todoItem = new TodoItemResponse().FromModel(todoItemResponse);
+        return new ZordoResult<TodoItemResponse>().CreateSuccess(todoItem);
     }
 
     public Task<TodoItemResponse> UpdateTodoItemAsync(string userEmail, TodoItemRequest todoItemRequest, int taskId)

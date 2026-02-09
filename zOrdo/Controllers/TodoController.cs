@@ -28,4 +28,13 @@ public class TodoController(ITodoItemService todoItemService) : BaseController
         var result = await todoItemService.GetTodoItemsAsync(userEmail, pageNumber, pageSize);
         return MapToActionResult(result);
     }
+    
+    [HttpGet("{todoItemId:int}")]
+    public async Task<ActionResult<TodoItemResponse>> GetTodoItemAsync(
+        string userEmail,
+        int todoItemId)
+    {
+        var result = await todoItemService.GetTodoItemAsync(userEmail, todoItemId);
+        return MapToActionResult(result);
+    }
 }

@@ -37,9 +37,11 @@ public class TodoItemClient(
         return JsonSerializer.Deserialize<Paginated<TodoItem>>(rawResponse, _jsonOptions)!;
     }
 
-    public Task<TodoItem> GetTTodoItemAsync(string userEmail, int taskId)
+    public async Task<TodoItem?> GetTodoItemAsync(int userId, int taskId)
     {
-        throw new NotImplementedException();
+        var response = await _client.GetAsync($"{RequestUri}/{userId}");
+        var rawResponse = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<TodoItem>(rawResponse, _jsonOptions);
     }
 
     public Task<TodoItem> UpdateTodoItemAsync(string userEmail, TodoItemRequest todoItemRequest, int taskId)

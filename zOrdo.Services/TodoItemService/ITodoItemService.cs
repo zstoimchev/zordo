@@ -8,7 +8,7 @@ public interface ITodoItemService
 {
     Task<ZordoResult<TodoItemResponse>> CreateTodoItemAsync(string userEmail, TodoItemRequest todoItemRequest);
     Task<ZordoResult<Paginated<TodoItemResponse>>> GetTodoItemsAsync(string userEmail, int pageNumber, int pageSize);
-    Task<TodoItemResponse> GetTodoItemAsync(string userEmail, int taskId);
+    Task<ZordoResult<TodoItemResponse>> GetTodoItemAsync(string userEmail, int taskId);
     Task<TodoItemResponse> UpdateTodoItemAsync(string userEmail, TodoItemRequest todoItemRequest, int taskId);
     Task<bool> DeleteTodoItemAsync(string userEmail, int taskId);
     Task<bool> CompleteTodoItemAsync(string userEmail, int taskId);

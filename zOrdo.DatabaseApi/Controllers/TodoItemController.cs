@@ -24,4 +24,13 @@ public class TodoItemController(ITodoItemRepository todoItemRepository) : Contro
         var response = await todoItemRepository.GetTodoItemsAsync(userId, pageNumber, pageSize);
         return Ok(response);
     }
+
+    [HttpGet("{todoItemId:int}")]
+    public async Task<ActionResult<TodoItem>> GetTodoItemAsync(
+        int userId,
+        int todoItemId)
+    {
+        var response = await todoItemRepository.GetTodoItemAsync(userId, todoItemId);
+        return response is null ? NotFound() : Ok(response);
+    }
 }
