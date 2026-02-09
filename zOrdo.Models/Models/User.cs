@@ -2,7 +2,7 @@ using zOrdo.Models.Requests;
 
 namespace zOrdo.Models.Models;
 
-public class User : SharedProperties
+public class User : SharedDbProperties
 {
     /// <summary>
     /// First name of the user
