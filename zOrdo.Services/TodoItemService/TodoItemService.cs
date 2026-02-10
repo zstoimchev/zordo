@@ -20,11 +20,8 @@ public class TodoItemService(
         TodoItemRequest todoItemRequest)
     {
         var user = await userRepository.GetUserAsync(userEmail);
-        _logger.LogInformation("dewhbfesjfbjesrbfjs rfsr frs ");
         if (user == null) return new ZordoResult<TodoItemResponse>().CreateConflict("User not found");
-        _logger.LogInformation("dewhbfesjfbjesrbfjs rfsr frs ");
         var todoItem = new TodoItem().FromRequest(user.Id, todoItemRequest);
-        _logger.LogInformation("dewhbfesjfbjesrbfjs rfsr frs ");
         var createdTodoItem = await todoItemRepository.CreateTodoItemAsync(user.Id, todoItem);
         return createdTodoItem != null
             ? new ZordoResult<TodoItemResponse>().CreateSuccess(new TodoItemResponse().FromModel(createdTodoItem))
