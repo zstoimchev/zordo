@@ -3,7 +3,6 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using zOrdo.Models;
 using zOrdo.Models.Models;
-using zOrdo.Models.Requests;
 using zOrdo.Repositories.UsersRepository;
 
 namespace zOrdo.Repositories.TodoItemRepository;
@@ -44,7 +43,7 @@ public class TodoItemClient(
         return JsonSerializer.Deserialize<TodoItem>(rawResponse, _jsonOptions);
     }
 
-    public Task<TodoItem> UpdateTodoItemAsync(string userEmail, TodoItemRequest todoItemRequest, int taskId)
+    public Task<TodoItem?> UpdateTodoItemAsync(int userId, TodoItem todoItemRequest)
     {
         throw new NotImplementedException();
     }

@@ -108,7 +108,7 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
         return result;
     }
 
-    public Task<TodoItem> UpdateTodoItemAsync(string userEmail, TodoItemRequest todoItemRequest, int taskId)
+    public Task<TodoItem?> UpdateTodoItemAsync(int userId, TodoItem item)
     {
         throw new NotImplementedException();
     }
