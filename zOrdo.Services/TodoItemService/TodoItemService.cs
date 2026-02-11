@@ -20,11 +20,8 @@ public class TodoItemService(
         TodoItemRequest todoItemRequest)
     {
         var user = await userRepository.GetUserAsync(userEmail);
-        _logger.LogInformation("dewhbfesjfbjesrbfjs rfsr frs ");
         if (user == null) return new ZordoResult<TodoItemResponse>().CreateConflict("User not found");
-        _logger.LogInformation("dewhbfesjfbjesrbfjs rfsr frs ");
         var todoItem = new TodoItem().FromRequest(user.Id, todoItemRequest);
-        _logger.LogInformation("dewhbfesjfbjesrbfjs rfsr frs ");
         var createdTodoItem = await todoItemRepository.CreateTodoItemAsync(user.Id, todoItem);
         return createdTodoItem != null
             ? new ZordoResult<TodoItemResponse>().CreateSuccess(new TodoItemResponse().FromModel(createdTodoItem))
@@ -59,9 +56,26 @@ public class TodoItemService(
         return new ZordoResult<TodoItemResponse>().CreateSuccess(todoItem);
     }
 
-    public Task<TodoItemResponse> UpdateTodoItemAsync(string userEmail, TodoItemRequest todoItemRequest, int taskId)
+    public async Task<ZordoResult<TodoItemResponse>> UpdateTodoItemAsync(
+        string userEmail, 
+        TodoItemRequest todoItemRequest, 
+        int taskId)
     {
-        throw new NotImplementedException();
+        var user = await userRepository.GetUserAsync(userEmail);
+        if (user == null) return new ZordoResult<TodoItemResponse>().CreateConflict("User not found");
+       var item = await todoItemRepository.GetTodoItemAsync(user.Id, taskId);
+        if (item == null) return new ZordoResult<TodoItemResponse>().CreateNotFound("Could not find task.");
+        var request = new TodoItem()
+        {
+            Title = todoItemRequest.Title,
+            Description = todoItemRequest.Description,
+            Priority = todoItemRequest.Priority,
+            DueDateUtc = todoItemRequest.DueDateUtc
+        };
+        var updated = await todoItemRepository.UpdateTodoItemAsync(user.Id, request);
+        return updated == null 
+            ? new ZordoResult<TodoItemResponse>().CreateConflict("Failed to update task.") 
+            : new ZordoResult<TodoItemResponse>().CreateSuccess(new TodoItemResponse().FromModel(updated));
     }
 
     public Task<bool> DeleteTodoItemAsync(string userEmail, int taskId)
