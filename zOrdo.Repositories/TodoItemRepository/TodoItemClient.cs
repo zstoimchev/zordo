@@ -3,7 +3,6 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using zOrdo.Models;
 using zOrdo.Models.Models;
-using zOrdo.Repositories.UsersRepository;
 
 namespace zOrdo.Repositories.TodoItemRepository;
 
@@ -11,7 +10,7 @@ public class TodoItemClient(
     ILoggerFactory loggerFactory,
     IHttpClientFactory httpClientFactory) : ITodoItemRepository
 {
-    private readonly ILogger<UserClient> _logger = loggerFactory.CreateLogger<UserClient>();
+    private readonly ILogger<TodoItemClient> _logger = loggerFactory.CreateLogger<TodoItemClient>();
     private readonly HttpClient _client = httpClientFactory.CreateClient("zOrdo.DatabaseApi");
     private const string RequestUri = "api/todoItem";
 
