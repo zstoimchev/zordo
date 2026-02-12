@@ -147,12 +147,29 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
         });
     }
 
-    public Task<bool> DeleteTodoItemAsync(string userEmail, int taskId)
+    public async Task<bool> DeleteTodoItemAsync(int userId, int taskId)
     {
-        throw new NotImplementedException();
+        using var connection = utils.CreateConnection();
+
+        const string sql = """
+                           UPDATE TODO_ITEMS
+                           SET DELETED_ON_UTC = @deleted_on_utc
+                           WHERE USER_ID = @user_id
+                                 AND ID = @task_id
+                                 AND DELETED_ON_UTC IS NULL
+                           """;
+
+        var affectedRows = await connection.ExecuteAsync(sql, new
+        {
+            user_id = userId,
+            task_id = taskId,
+            deleted_on_utc = DateTime.UtcNow
+        });
+
+        return affectedRows > 0;
     }
 
-    public Task<bool> CompleteTodoItemAsync(string userEmail, int taskId)
+    public Task<bool> CompleteTodoItemAsync(int userId, int taskId)
     {
         throw new NotImplementedException();
     }
