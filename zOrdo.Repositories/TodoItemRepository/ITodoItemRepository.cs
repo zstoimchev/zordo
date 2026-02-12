@@ -9,7 +9,6 @@ public interface ITodoItemRepository
     Task<Paginated<TodoItem>> GetTodoItemsAsync(int userId, int pageNumber, int pageSize);
     Task<TodoItem?> GetTodoItemAsync(int userId, int taskId);
     Task<TodoItem?> UpdateTodoItemAsync(int userId, TodoItem todoItem);
-    Task<bool> DeleteTodoItemAsync(string userEmail, int taskId);
-    Task<bool> CompleteTodoItemAsync(string userEmail, int taskId);
-    
+    Task<bool> DeleteTodoItemAsync(int userId, int taskId);
+    Task<bool> CompleteTodoItemAsync(int userId, int taskId);
 }
