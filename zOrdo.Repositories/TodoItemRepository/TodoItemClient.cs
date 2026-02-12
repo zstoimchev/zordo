@@ -48,12 +48,12 @@ public class TodoItemClient(
         throw new NotImplementedException();
     }
 
-    public Task<bool> DeleteTodoItemAsync(string userEmail, int taskId)
+    public Task<bool> DeleteTodoItemAsync(int userId, int taskId)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> CompleteTodoItemAsync(string userEmail, int taskId)
+    public Task<bool> CompleteTodoItemAsync(int userId, int taskId)
     {
         throw new NotImplementedException();
     }
