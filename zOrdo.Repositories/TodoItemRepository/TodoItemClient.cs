@@ -58,8 +58,10 @@ public class TodoItemClient(
         return response.IsSuccessStatusCode;
     }
 
-    public Task<bool> CompleteTodoItemAsync(int userId, int taskId)
+    public async Task<bool> CompleteTodoItemAsync(int userId, int taskId)
     {
-        throw new NotImplementedException();
+        var requestUri = $"{RequestUri}/{userId}/{taskId}/complete";
+        var response = await _client.PutAsync(requestUri, null);
+        return response.IsSuccessStatusCode;
     }
 }
