@@ -43,9 +43,13 @@ public class TodoItemClient(
         return JsonSerializer.Deserialize<TodoItem>(rawResponse, _jsonOptions);
     }
 
-    public Task<TodoItem?> UpdateTodoItemAsync(int userId, TodoItem todoItemRequest)
+    public async Task<TodoItem?> UpdateTodoItemAsync(int userId, TodoItem todoItemRequest)
     {
-        throw new NotImplementedException();
+        var requestUri = $"{RequestUri}/{userId}/{todoItemRequest.Id}";
+        var response = await _client.PutAsJsonAsync(requestUri, todoItemRequest);
+        // response.EnsureSuccessStatusCode();
+        var rawResponse = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<TodoItem>(rawResponse, _jsonOptions);
     }
 
     public Task<bool> DeleteTodoItemAsync(int userId, int taskId)
