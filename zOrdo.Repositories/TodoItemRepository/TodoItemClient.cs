@@ -52,9 +52,10 @@ public class TodoItemClient(
         return JsonSerializer.Deserialize<TodoItem>(rawResponse, _jsonOptions);
     }
 
-    public Task<bool> DeleteTodoItemAsync(int userId, int taskId)
+    public async Task<bool> DeleteTodoItemAsync(int userId, int taskId)
     {
-        throw new NotImplementedException();
+        var response = await _client.DeleteAsync($"{RequestUri}/{userId}/{taskId}");
+        return response.IsSuccessStatusCode;
     }
 
     public Task<bool> CompleteTodoItemAsync(int userId, int taskId)
