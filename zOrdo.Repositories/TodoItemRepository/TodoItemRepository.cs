@@ -102,9 +102,10 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
                            FROM TODO_ITEMS
                            WHERE DELETED_ON_UTC IS NULL
                                 AND USER_ID = @user_id
+                                AND ID = @id
                            """;
 
-        var result = await connection.QueryFirstOrDefaultAsync<TodoItem>(sql, new { user_id = userId });
+        var result = await connection.QueryFirstOrDefaultAsync<TodoItem>(sql, new { user_id = userId, id = taskId });
         return result;
     }
 
