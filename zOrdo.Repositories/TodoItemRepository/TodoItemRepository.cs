@@ -1,5 +1,6 @@
 using Dapper;
 using zOrdo.Models;
+using zOrdo.Models.Enums;
 using zOrdo.Models.Models;
 using zOrdo.Models.Requests;
 
@@ -169,8 +170,26 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
         return affectedRows > 0;
     }
 
-    public Task<bool> CompleteTodoItemAsync(int userId, int taskId)
+    public async Task<bool> CompleteTodoItemAsync(int userId, int taskId)
     {
-        throw new NotImplementedException();
+        using var connection = utils.CreateConnection();
+
+        const string sql = """
+                           UPDATE TODO_ITEMS
+                           SET STATUS = @status
+                           WHERE USER_ID = @user_id
+                                 AND ID = @task_id
+                                 AND DELETED_ON_UTC IS NULL
+                           """;
+
+        var affectedRows = await connection.ExecuteAsync(sql, new
+        {
+            user_id = userId,
+            task_id = taskId,
+            status = nameof(Status.Finished)
+        });
+
+        return affectedRows > 0;
     }
+
 }
