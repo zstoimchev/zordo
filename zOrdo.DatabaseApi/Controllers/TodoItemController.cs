@@ -28,7 +28,7 @@ public class TodoItemController(ITodoItemRepository todoItemRepository) : Contro
     [HttpGet("{todoItemId:int}")]
     public async Task<ActionResult<TodoItem>> GetTodoItemAsync(
         int userId,
-        int todoItemId)
+        [FromQuery] int todoItemId)
     {
         var response = await todoItemRepository.GetTodoItemAsync(userId, todoItemId);
         return response is null ? NotFound() : Ok(response);

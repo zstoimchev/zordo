@@ -38,7 +38,7 @@ public class TodoItemClient(
 
     public async Task<TodoItem?> GetTodoItemAsync(int userId, int taskId)
     {
-        var response = await _client.GetAsync($"{RequestUri}/{userId}");
+        var response = await _client.GetAsync($"{RequestUri}/{userId}/{taskId}");
         var rawResponse = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<TodoItem>(rawResponse, _jsonOptions);
     }
