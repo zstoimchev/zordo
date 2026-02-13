@@ -20,6 +20,7 @@ public class UserService(
             return new ZordoResult<UserResponse>().CreateConflict("User with the given email already exists.");
         _logger.LogInformation("No user found with the given email, proceeding to create a new user: {@User}", user);
         var userModel = new User().FromUserRequest(user);
+        userModel.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.Password);
         var createdUser = await userRepository.CreateUserAsync(userModel);
         // validate user model
         _logger.LogInformation("Created new user: {@User}", createdUser);
