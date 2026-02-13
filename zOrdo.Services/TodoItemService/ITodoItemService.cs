@@ -9,7 +9,7 @@ public interface ITodoItemService
     Task<ZordoResult<TodoItemResponse>> CreateTodoItemAsync(string userEmail, TodoItemRequest todoItemRequest);
     Task<ZordoResult<Paginated<TodoItemResponse>>> GetTodoItemsAsync(string userEmail, int pageNumber, int pageSize);
     Task<ZordoResult<TodoItemResponse>> GetTodoItemAsync(string userEmail, int taskId);
-    Task<TodoItemResponse> UpdateTodoItemAsync(string userEmail, TodoItemRequest todoItemRequest, int taskId);
+    Task<ZordoResult<TodoItemResponse>> UpdateTodoItemAsync(string userEmail, TodoItemRequest todoItemRequest, int taskId);
     Task<bool> DeleteTodoItemAsync(string userEmail, int taskId);
     Task<bool> CompleteTodoItemAsync(string userEmail, int taskId);
 }

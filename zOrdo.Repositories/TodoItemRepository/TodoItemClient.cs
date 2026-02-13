@@ -3,8 +3,6 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using zOrdo.Models;
 using zOrdo.Models.Models;
-using zOrdo.Models.Requests;
-using zOrdo.Repositories.UsersRepository;
 
 namespace zOrdo.Repositories.TodoItemRepository;
 
@@ -12,7 +10,7 @@ public class TodoItemClient(
     ILoggerFactory loggerFactory,
     IHttpClientFactory httpClientFactory) : ITodoItemRepository
 {
-    private readonly ILogger<UserClient> _logger = loggerFactory.CreateLogger<UserClient>();
+    private readonly ILogger<TodoItemClient> _logger = loggerFactory.CreateLogger<TodoItemClient>();
     private readonly HttpClient _client = httpClientFactory.CreateClient("zOrdo.DatabaseApi");
     private const string RequestUri = "api/todoItem";
 
@@ -39,23 +37,30 @@ public class TodoItemClient(
 
     public async Task<TodoItem?> GetTodoItemAsync(int userId, int taskId)
     {
-        var response = await _client.GetAsync($"{RequestUri}/{userId}");
+        var response = await _client.GetAsync($"{RequestUri}/{userId}/{taskId}");
         var rawResponse = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<TodoItem>(rawResponse, _jsonOptions);
     }
 
-    public Task<TodoItem> UpdateTodoItemAsync(string userEmail, TodoItemRequest todoItemRequest, int taskId)
+    public async Task<TodoItem?> UpdateTodoItemAsync(int userId, TodoItem todoItemRequest)
     {
-        throw new NotImplementedException();
+        var requestUri = $"{RequestUri}/{userId}/{todoItemRequest.Id}";
+        var response = await _client.PutAsJsonAsync(requestUri, todoItemRequest);
+        // response.EnsureSuccessStatusCode();
+        var rawResponse = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<TodoItem>(rawResponse, _jsonOptions);
     }
 
-    public Task<bool> DeleteTodoItemAsync(string userEmail, int taskId)
+    public async Task<bool> DeleteTodoItemAsync(int userId, int taskId)
     {
-        throw new NotImplementedException();
+        var response = await _client.DeleteAsync($"{RequestUri}/{userId}/{taskId}");
+        return response.IsSuccessStatusCode;
     }
 
-    public Task<bool> CompleteTodoItemAsync(string userEmail, int taskId)
+    public async Task<bool> CompleteTodoItemAsync(int userId, int taskId)
     {
-        throw new NotImplementedException();
+        var requestUri = $"{RequestUri}/{userId}/{taskId}/complete";
+        var response = await _client.PutAsync(requestUri, null);
+        return response.IsSuccessStatusCode;
     }
 }

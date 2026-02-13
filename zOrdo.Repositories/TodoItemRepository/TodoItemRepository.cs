@@ -1,5 +1,6 @@
 using Dapper;
 using zOrdo.Models;
+using zOrdo.Models.Enums;
 using zOrdo.Models.Models;
 using zOrdo.Models.Requests;
 
@@ -102,24 +103,93 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
                            FROM TODO_ITEMS
                            WHERE DELETED_ON_UTC IS NULL
                                 AND USER_ID = @user_id
+                                AND ID = @id
                            """;
 
-        var result = await connection.QueryFirstOrDefaultAsync<TodoItem>(sql, new { user_id = userId });
+        var result = await connection.QueryFirstOrDefaultAsync<TodoItem>(sql, new { user_id = userId, id = taskId });
         return result;
     }
 
-    public Task<TodoItem> UpdateTodoItemAsync(string userEmail, TodoItemRequest todoItemRequest, int taskId)
+    public async Task<TodoItem?> UpdateTodoItemAsync(int userId, TodoItem item)
     {
-        throw new NotImplementedException();
+        using var connection = utils.CreateConnection();
+
+        const string sql = """
+                           UPDATE TODO_ITEMS
+                           SET
+                               TITLE = @title,
+                               DESCRIPTION = @description,
+                               PRIORITY = @priority,
+                               STATUS = @status,
+                               DUE_DATE_UTC = @due_date_utc
+                           WHERE USER_ID = @user_id
+                                 AND ID = @task_id
+                                 AND DELETED_ON_UTC IS NULL
+                           RETURNING 
+                               ID               AS Id,
+                               USER_ID          AS UserId,
+                               TITLE            AS Title,
+                               DESCRIPTION      AS Description,
+                               PRIORITY         AS Priority,
+                               INSERTED_ON_UTC  AS InsertedOnUtc,
+                               DUE_DATE_UTC     AS DueDateUtc,
+                               STATUS           AS Status
+                           """;
+
+        return await connection.QueryFirstOrDefaultAsync<TodoItem>(sql, new
+        {
+            user_id = userId,
+            task_id = item.Id,
+            title = item.Title,
+            description = item.Description,
+            priority = item.Priority.ToString(),
+            status = item.Status.ToString(),
+            due_date_utc = item.DueDateUtc
+        });
     }
 
-    public Task<bool> DeleteTodoItemAsync(string userEmail, int taskId)
+    public async Task<bool> DeleteTodoItemAsync(int userId, int taskId)
     {
-        throw new NotImplementedException();
+        using var connection = utils.CreateConnection();
+
+        const string sql = """
+                           UPDATE TODO_ITEMS
+                           SET DELETED_ON_UTC = @deleted_on_utc
+                           WHERE USER_ID = @user_id
+                                 AND ID = @task_id
+                                 AND DELETED_ON_UTC IS NULL
+                           """;
+
+        var affectedRows = await connection.ExecuteAsync(sql, new
+        {
+            user_id = userId,
+            task_id = taskId,
+            deleted_on_utc = DateTime.UtcNow
+        });
+
+        return affectedRows > 0;
     }
 
-    public Task<bool> CompleteTodoItemAsync(string userEmail, int taskId)
+    public async Task<bool> CompleteTodoItemAsync(int userId, int taskId)
     {
-        throw new NotImplementedException();
+        using var connection = utils.CreateConnection();
+
+        const string sql = """
+                           UPDATE TODO_ITEMS
+                           SET STATUS = @status
+                           WHERE USER_ID = @user_id
+                                 AND ID = @task_id
+                                 AND DELETED_ON_UTC IS NULL
+                           """;
+
+        var affectedRows = await connection.ExecuteAsync(sql, new
+        {
+            user_id = userId,
+            task_id = taskId,
+            status = nameof(Status.Finished)
+        });
+
+        return affectedRows > 0;
     }
+
 }
