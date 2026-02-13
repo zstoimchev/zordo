@@ -1,7 +1,10 @@
-using Microsoft.AspNetCore.Identity.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using zOrdo.Models.Models;
-using zOrdo.Services.AuthService;
+using zOrdo.Models.Requests;
 using zOrdo.Services.UserService;
 
 namespace zOrdo.Controllers;
@@ -10,36 +13,50 @@ namespace zOrdo.Controllers;
 [Route("api/auth")]
 public class AuthController(
     IUserService userService, 
-    IConfiguration config, 
-    IAuthService authService) : BaseController
+    IConfiguration config) : ControllerBase
 {
-    private readonly IAuthService _authService = authService;
-    private readonly IConfiguration _config = config;
-
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var userModel = await userService.GetUserAsync(request.Email);
-        var user = new User();
-        
-        if (user == null || !VerifyPassword(user, request.Password)) return Unauthorized("Invalid credentials");
+        var userResult = await userService.GetUserAsync(request.Email);
+        if (!userResult.IsSuccessful) return Unauthorized("Invalid credentials");
 
+        var user = userResult.Result;
+
+        var passwordMatches = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
+        if (!passwordMatches) return Unauthorized("Invalid credentials");
+
+        // Generate JWT
         var token = GenerateJwtToken(user);
-        
-        return Ok(new 
-        { 
-            token = token,
-            expiresIn = 3600
-        });
-    }
 
-    private bool VerifyPassword(User user, string password)
-    {
-        return true;
+        return Ok(new
+        {
+            token,
+            expiresIn = int.Parse(config["Jwt:AccessTokenExpirationMinutes"]) * 60
+        });
     }
 
     private string GenerateJwtToken(User user)
     {
-        throw new System.NotImplementedException();
+        var securityKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(config["Jwt:SecretKey"]!));
+
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+        var claims = new[]
+        {
+            new Claim("userId", user.Id.ToString()),
+            new Claim(ClaimTypes.Email, user.Email)
+        };
+
+        var token = new JwtSecurityToken(
+            issuer: config["Jwt:Issuer"],
+            audience: config["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(int.Parse(config["Jwt:AccessTokenExpirationMinutes"]!)),
+            signingCredentials: credentials
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }
