@@ -5,35 +5,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using zOrdo.Models.Models;
 using zOrdo.Models.Requests;
-using zOrdo.Services.UserService;
+using zOrdo.Repositories.UsersRepository;
 
 namespace zOrdo.Controllers;
 
 [ApiController]
 [Route("api/auth")]
 public class AuthController(
-    IUserService userService, 
+    IUserRepository userRepository,
     IConfiguration config) : ControllerBase
 {
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var userResult = await userService.GetUserAsync(request.Email);
-        if (!userResult.IsSuccessful) return Unauthorized("Invalid credentials");
+        var user = await userRepository.GetUserAsync(request.Email);
+        if (user == null) return Unauthorized("Invalid credentials");
 
-        var user = userResult.Result;
-
-        var passwordMatches = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
+        var passwordMatches = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
         if (!passwordMatches) return Unauthorized("Invalid credentials");
 
-        // Generate JWT
         var token = GenerateJwtToken(user);
 
-        return Ok(new
-        {
-            token,
-            expiresIn = int.Parse(config["Jwt:AccessTokenExpirationMinutes"]) * 60
-        });
+        return Ok(new { token, expiresIn = config.GetValue<int>("Jwt:AccessTokenExpirationMinutes") * 60 });
     }
 
     private string GenerateJwtToken(User user)
@@ -50,10 +43,10 @@ public class AuthController(
         };
 
         var token = new JwtSecurityToken(
-            issuer: config["Jwt:Issuer"],
-            audience: config["Jwt:Audience"],
+            issuer: config.GetValue<string>("Jwt:Issuer"),
+            audience: config.GetValue<string>("Jwt:Audience"),
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(int.Parse(config["Jwt:AccessTokenExpirationMinutes"]!)),
+            expires: DateTime.UtcNow.AddMinutes(config.GetValue<int>("Jwt:AccessTokenExpirationMinutes")),
             signingCredentials: credentials
         );
 
