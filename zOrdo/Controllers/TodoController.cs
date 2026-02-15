@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using zOrdo.Models;
 using zOrdo.Models.Requests;
@@ -8,6 +9,7 @@ namespace zOrdo.Controllers;
 
 [ApiController]
 [Route("api/[controller]/{userEmail}")]
+[Authorize]
 public class TodoController(ITodoItemService todoItemService) : BaseController
 {
     [HttpPost]

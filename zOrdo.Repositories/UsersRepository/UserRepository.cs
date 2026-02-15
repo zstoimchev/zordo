@@ -15,12 +15,14 @@ public class UserRepository(ISharedDatabaseUtils utils) : IUserRepository
                                               MIDDLE_NAME, 
                                               LAST_NAME, 
                                               EMAIL,
+                                              PASSWORD_HASH,
                                               INSERTED_ON_UTC
                            ) VALUES (
                                    @first_name, 
                                    @middle_name, 
                                    @last_name,
                                    @email,
+                                   @password_hash,
                                    @inserted_on_utc
                            ) RETURNING ID
                            """;
@@ -32,6 +34,7 @@ public class UserRepository(ISharedDatabaseUtils utils) : IUserRepository
             middle_name = user.MiddleName,
             last_name = user.LastName,
             email = user.Email,
+            password_hash = user.PasswordHash,
             inserted_on_utc = insertedOnUtc
         });
 
