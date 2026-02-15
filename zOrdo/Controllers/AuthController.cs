@@ -52,4 +52,12 @@ public class AuthController(
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+    
+    [HttpPost("logout")]
+    public IActionResult Logout()
+    {
+        // TODO: implement server-side logout
+        return Ok("Logout successful. Please delete token on client.");
+    }
+
 }
