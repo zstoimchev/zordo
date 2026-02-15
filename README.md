@@ -66,6 +66,9 @@ GET /api/todoItem/{userId}?pageNumber=1&pageSize=10
 PUT /api/todoItem/{userId}/{todoItemId}/complete
 ```
 
+## Postman Collection
+[zOrdo.postman_collection.json](https://zstoimchev-81b4561d-543924.postman.co/workspace/Zhivko-Stoimchev's-Workspace~466c3165-9e94-4216-80e2-38628664c118/collection/51057785-df095b38-a113-43fb-b042-c463f3e83f6d?action=share&creator=51057785&active-environment=51057785-ec25bb3f-702f-4165-b710-85daeecd1972)
+
 ## 🔮 What’s Coming
 
 * Smart task ordering
