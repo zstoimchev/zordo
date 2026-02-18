@@ -63,4 +63,9 @@ public class TodoItemClient(
         var response = await _client.PutAsync(requestUri, null);
         return response.IsSuccessStatusCode;
     }
+
+    public Task<List<TodoItem>> GetIncompleteTasksAsync(int userId)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -11,4 +11,5 @@ public interface ITodoItemRepository
     Task<TodoItem?> UpdateTodoItemAsync(int userId, TodoItem todoItem);
     Task<bool> DeleteTodoItemAsync(int userId, int taskId);
     Task<bool> CompleteTodoItemAsync(int userId, int taskId);
+    Task<List<TodoItem>> GetIncompleteTasksAsync(int userId);
 }

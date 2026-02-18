@@ -192,4 +192,8 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
         return affectedRows > 0;
     }
 
+    public Task<List<TodoItem>> GetIncompleteTasksAsync(int userId)
+    {
+        throw new NotImplementedException();
+    }
 }
