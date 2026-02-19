@@ -212,5 +212,4 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
 
         return result.ToList();
     }
-
 }
