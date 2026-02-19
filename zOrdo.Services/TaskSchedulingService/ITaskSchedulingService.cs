@@ -1,8 +1,9 @@
-using zOrdo.Models.Models;
+using zOrdo.Models;
+using zOrdo.Models.Responses;
 
 namespace zOrdo.Services.TaskSchedulingService;
 
-public interface ITaskSchedulingStrategy
+public interface ITaskSchedulingService
 {
-    Task<List<TodoItem>> GeneratePlanAsync(int userId);
+    Task<ZordoResult<List<TodoItemResponse>>> GeneratePlanAsync(int userId);
 }

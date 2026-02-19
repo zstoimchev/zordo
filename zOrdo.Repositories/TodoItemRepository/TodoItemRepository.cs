@@ -2,7 +2,6 @@ using Dapper;
 using zOrdo.Models;
 using zOrdo.Models.Enums;
 using zOrdo.Models.Models;
-using zOrdo.Models.Requests;
 
 namespace zOrdo.Repositories.TodoItemRepository;
 
@@ -192,8 +191,26 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
         return affectedRows > 0;
     }
 
-    public Task<List<TodoItem>> GetIncompleteTasksAsync(int userId)
+    public async Task<List<TodoItem>> GetIncompleteTasksAsync(int userId)
     {
-        throw new NotImplementedException();
+        using var connection = utils.CreateConnection();
+        
+        var sql = """
+                  SELECT *
+                  FROM TODO_ITEMS
+                  WHERE USER_ID = @user_id
+                    AND STATUS != @status
+                  """;
+
+        var result = await connection.QueryAsync<TodoItem>(
+            sql,
+            new
+            {
+                user_id = userId,
+                status = Status.Finished
+            });
+
+        return result.ToList();
     }
+
 }
