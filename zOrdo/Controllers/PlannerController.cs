@@ -9,7 +9,7 @@ namespace zOrdo.Controllers;
 public class PlannerController(ITaskSchedulingService schedulingService) : BaseController
 {
     [HttpGet]
-    public async Task<ActionResult<List<TodoItemResponse>>> GetPlan()
+    public async Task<ActionResult<List<TodoItemResponse>>> GetPlanAsync()
     {
         var userId = GetUserId();
         var plan = await schedulingService.GeneratePlanAsync(userId);
