@@ -6,6 +6,7 @@ using zOrdo.Middleware;
 using zOrdo.Repositories.TodoItemRepository;
 using zOrdo.Repositories.UsersRepository;
 using zOrdo.Services.AuthService;
+using zOrdo.Services.TaskSchedulingService;
 using zOrdo.Services.TodoItemService;
 using zOrdo.Services.UserService;
 
@@ -27,6 +28,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ITodoItemService, TodoItemService>();
 builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddTransient<ITaskSchedulingService, TaskSchedulingService>();
 
 // Add repositories to the container
 builder.Services.AddTransient<IUserRepository, UserClient>();

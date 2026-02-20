@@ -11,6 +11,7 @@ public class TodoItem : SharedDbProperties
     public Priority Priority { get; set; }
     public Status Status { get; set; }
     public DateTime DueDateUtc { get; set; }
+    public int? EstimatedMinutes { get; set; }
     public DateTime CompletedOnUtc { get; set; }
 
     public TodoItem FromRequest(int userId, TodoItemRequest todoItemRequest)

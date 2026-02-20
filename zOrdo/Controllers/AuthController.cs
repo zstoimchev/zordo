@@ -10,7 +10,7 @@ using zOrdo.Repositories.UsersRepository;
 namespace zOrdo.Controllers;
 
 [ApiController]
-[Route("api/auth")]
+[Route("api/[controller]")]
 public class AuthController(
     IUserRepository userRepository,
     IConfiguration config) : ControllerBase

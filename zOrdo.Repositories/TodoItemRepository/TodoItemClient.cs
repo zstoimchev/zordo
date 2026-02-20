@@ -63,4 +63,12 @@ public class TodoItemClient(
         var response = await _client.PutAsync(requestUri, null);
         return response.IsSuccessStatusCode;
     }
+
+    public async Task<List<TodoItem>> GetIncompleteTasksAsync(int userId)
+    {
+        var requestUri = $"{RequestUri}/{userId}/incomplete";
+        var response = await _client.GetAsync(requestUri);
+        var rawResponse = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<List<TodoItem>>(rawResponse, _jsonOptions) ?? [];
+    }
 }
