@@ -64,4 +64,13 @@ public class TodoItemController(ITodoItemRepository todoItemRepository) : Contro
         var success = await todoItemRepository.CompleteTodoItemAsync(userId, todoItemId);
         return success ? NoContent() : NotFound();
     }
+
+    [HttpGet("incomplete")]
+    public async Task<ActionResult> GetIncompleteTodoItemsAsync(
+        int userId,
+        int todoItemId)
+    {
+        var response = await todoItemRepository.GetIncompleteTasksAsync(userId);
+        return Ok(response);
+    }
 }
