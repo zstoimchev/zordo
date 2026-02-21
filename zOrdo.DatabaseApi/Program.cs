@@ -15,11 +15,7 @@ builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
 builder.Services.AddControllers();
 
 // Register DB utils
-var connectionStringTemplate = builder.Configuration.GetSection("Database:ConnectionStrings:Default").Value;
-if (string.IsNullOrWhiteSpace(connectionStringTemplate)) throw new InvalidOperationException("Missing Database ConnectionString");
-var connectionPassword = builder.Configuration.GetSection("Database:ConnectionStrings:DefaultPassword").Value;
-var connection = string.Format(connectionStringTemplate, connectionPassword);
-builder.Services.AddSingleton<ISharedDatabaseUtils>(new SharedDatabaseUtils(connection));
+builder.Services.AddSingleton<ISharedDatabaseUtils, SharedDatabaseUtils>();
 
 // Add repositories to the container
 builder.Services.AddTransient<IUserRepository, UserRepository>();
