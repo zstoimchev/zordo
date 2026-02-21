@@ -1,6 +1,7 @@
 using System.Data;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
+using Npgsql;
 using zOrdo.Models.Enums;
 
 namespace zOrdo.Repositories;
@@ -30,7 +31,7 @@ public class SharedDatabaseUtils : ISharedDatabaseUtils
         return _provider switch
         {
             DatabaseProvider.SqLite => new SqliteConnection(_connectionString),
-            // DatabaseProvider.Postgres => new NpgsqlConnection(_connectionString),
+            DatabaseProvider.Postgres => new NpgsqlConnection(_connectionString),
             // DatabaseProvider.Oracle => new OracleConnection(_connectionString),
             _ => throw new NotSupportedException($"Unsupported database: {_provider}")
         };
