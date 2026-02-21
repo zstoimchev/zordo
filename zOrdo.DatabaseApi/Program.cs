@@ -15,10 +15,7 @@ builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
 builder.Services.AddControllers();
 
 // Register DB utils
-var connectionString =
-    builder.Configuration.GetSection("Database:SQLite:ConnectionString").Value ??
-    throw new InvalidOperationException("Missing DB connection string"); // TODO: default config
-builder.Services.AddSingleton<ISharedDatabaseUtils>(new SharedDatabaseUtils(connectionString));
+builder.Services.AddSingleton<ISharedDatabaseUtils, SharedDatabaseUtils>();
 
 // Add repositories to the container
 builder.Services.AddTransient<IUserRepository, UserRepository>();
