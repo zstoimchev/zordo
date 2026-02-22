@@ -10,9 +10,10 @@ public class TaskSchedulingService(
     public async Task<ZordoResult<List<TodoItemResponse>>> GeneratePlanAsync(int userId)
     {
         var tasks = await repository.GetIncompleteTasksAsync(userId);
+        if (!tasks.Any()) return new ZordoResult<List<TodoItemResponse>>().CreateSuccess([]);
 
         var ordered = tasks
-            .OrderBy(t => t.DueDateUtc)
+            .OrderBy(t => t.DueDateUtc == default ? DateTime.MaxValue : t.DueDateUtc)
             .ThenByDescending(t => t.Priority)
             .ToList();
 
