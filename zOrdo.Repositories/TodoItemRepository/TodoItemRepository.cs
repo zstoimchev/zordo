@@ -206,7 +206,6 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
                       DUE_DATE_UTC     AS DueDateUtc,
                       STATUS           AS Status
                   FROM TODO_ITEMS
-                  FROM TODO_ITEMS
                   WHERE USER_ID = @user_id
                     AND STATUS != @status
                   """;
