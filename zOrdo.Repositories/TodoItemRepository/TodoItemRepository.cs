@@ -196,7 +196,16 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
         using var connection = utils.CreateConnection();
         
         var sql = """
-                  SELECT *
+                  SELECT 
+                      ID               AS Id,
+                      USER_ID          AS UserId,
+                      TITLE            AS Title,
+                      DESCRIPTION      AS Description,
+                      PRIORITY         AS Priority,
+                      INSERTED_ON_UTC  AS InsertedOnUtc,
+                      DUE_DATE_UTC     AS DueDateUtc,
+                      STATUS           AS Status
+                  FROM TODO_ITEMS
                   FROM TODO_ITEMS
                   WHERE USER_ID = @user_id
                     AND STATUS != @status
@@ -207,7 +216,7 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
             new
             {
                 user_id = userId,
-                status = Status.Finished
+                status = nameof(Status.Finished)
             });
 
         return result.ToList();
