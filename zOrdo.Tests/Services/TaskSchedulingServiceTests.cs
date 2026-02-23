@@ -58,4 +58,23 @@ public class TaskSchedulingServiceTests
         Assert.Equal("Today Low", ordered[1].Title);
         Assert.Equal("Tomorrow Low", ordered[2].Title);
     }
+    
+    [Fact]
+    public async Task GeneratePlanAsync_Should_Return_Empty_List_When_No_Tasks()
+    {
+        var mockRepository = new Mock<ITodoItemRepository>();
+
+        mockRepository
+            .Setup(r => r.GetIncompleteTasksAsync(It.IsAny<int>()))
+            .ReturnsAsync(new List<TodoItem>());
+
+        var service = new TaskSchedulingService(mockRepository.Object);
+
+        var result = await service.GeneratePlanAsync(1);
+        var ordered = result.Result;
+
+        Assert.NotNull(ordered);
+        Assert.Empty(ordered);
+    }
+
 }
