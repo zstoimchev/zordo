@@ -2,7 +2,8 @@ using Microsoft.Extensions.Logging;
 using zOrdo.Models;
 using zOrdo.Models.Models;
 using zOrdo.Repositories.UsersRepository;
-using zOrdo.Services.AuthService;
+
+namespace zOrdo.Services.AuthService;
 
 public class AuthService : IAuthService
 {
