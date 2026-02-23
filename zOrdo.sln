@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "zOrdo.DatabaseApi", "zOrdo.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "zOrdo.Middleware", "zOrdo.Middleware\zOrdo.Middleware.csproj", "{56184D8F-3726-4A90-B512-EAEC1245F2EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "zOrdo.Tests", "zOrdo.Tests\zOrdo.Tests.csproj", "{31453F24-D270-42CC-ADD6-EFB3B55DC8C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{56184D8F-3726-4A90-B512-EAEC1245F2EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56184D8F-3726-4A90-B512-EAEC1245F2EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56184D8F-3726-4A90-B512-EAEC1245F2EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31453F24-D270-42CC-ADD6-EFB3B55DC8C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31453F24-D270-42CC-ADD6-EFB3B55DC8C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31453F24-D270-42CC-ADD6-EFB3B55DC8C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31453F24-D270-42CC-ADD6-EFB3B55DC8C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
