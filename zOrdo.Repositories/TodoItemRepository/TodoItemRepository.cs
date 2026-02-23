@@ -18,6 +18,7 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
                                                   PRIORITY,
                                                   STATUS,
                                                   DUE_DATE_UTC,
+                                                  ESTIMATED_MINUTES,
                                                   INSERTED_ON_UTC
                            ) VALUES (
                                    @user_id, 
@@ -26,6 +27,7 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
                                    @priority,
                                    @status,
                                    @due_date_utc,
+                                   @estimated_minutes,
                                    @inserted_on_utc
                            ) RETURNING ID
                            """;
@@ -39,6 +41,7 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
             priority = todoItemRequest.Priority.ToString(),
             status = todoItemRequest.Status.ToString(),
             due_date_utc = todoItemRequest.DueDateUtc,
+            estimated_minutes = todoItemRequest.EstimatedMinutes,
             inserted_on_utc = insertedOnUtc
         });
 
@@ -53,14 +56,15 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
 
         const string sql = """
                            SELECT 
-                               ID               AS Id,
-                               USER_ID          AS UserId,
-                               TITLE            AS Title,
-                               DESCRIPTION      AS Description,
-                               PRIORITY         AS Priority,
-                               INSERTED_ON_UTC  AS InsertedOnUtc,
-                               DUE_DATE_UTC     AS DueDateUtc,
-                               STATUS           AS Status
+                               ID                   AS Id,
+                               USER_ID              AS UserId,
+                               TITLE                AS Title,
+                               DESCRIPTION          AS Description,
+                               PRIORITY             AS Priority,
+                               INSERTED_ON_UTC      AS InsertedOnUtc,
+                               DUE_DATE_UTC         AS DueDateUtc,
+                               ESTIMATED_MINUTES    AS EstimatedMinutes,
+                               STATUS               AS Status
                            FROM TODO_ITEMS
                            WHERE DELETED_ON_UTC IS NULL
                                 AND USER_ID = @user_id
@@ -91,14 +95,15 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
 
         const string sql = """
                            SELECT 
-                               ID               AS Id,
-                               USER_ID          AS UserId,
-                               TITLE            AS Title,
-                               DESCRIPTION      AS Description,
-                               PRIORITY         AS Priority,
-                               INSERTED_ON_UTC  AS InsertedOnUtc,
-                               DUE_DATE_UTC     AS DueDateUtc,
-                               STATUS           AS Status
+                               ID                   AS Id,
+                               USER_ID              AS UserId,
+                               TITLE                AS Title,
+                               DESCRIPTION          AS Description,
+                               PRIORITY             AS Priority,
+                               INSERTED_ON_UTC      AS InsertedOnUtc,
+                               DUE_DATE_UTC         AS DueDateUtc,
+                               ESTIMATED_MINUTES    AS EstimatedMinutes,
+                               STATUS               AS Status
                            FROM TODO_ITEMS
                            WHERE DELETED_ON_UTC IS NULL
                                 AND USER_ID = @user_id
@@ -121,6 +126,7 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
                                PRIORITY = @priority,
                                STATUS = @status,
                                DUE_DATE_UTC = @due_date_utc
+                               ESTIMATED_MINUTES = @estimated_minutes
                            WHERE USER_ID = @user_id
                                  AND ID = @task_id
                                  AND DELETED_ON_UTC IS NULL
@@ -143,7 +149,8 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
             description = item.Description,
             priority = item.Priority.ToString(),
             status = item.Status.ToString(),
-            due_date_utc = item.DueDateUtc
+            due_date_utc = item.DueDateUtc,
+            estimated_minutes = item.EstimatedMinutes
         });
     }
 
@@ -197,14 +204,15 @@ public class TodoItemRepository(ISharedDatabaseUtils utils) : ITodoItemRepositor
         
         var sql = """
                   SELECT 
-                      ID               AS Id,
-                      USER_ID          AS UserId,
-                      TITLE            AS Title,
-                      DESCRIPTION      AS Description,
-                      PRIORITY         AS Priority,
-                      INSERTED_ON_UTC  AS InsertedOnUtc,
-                      DUE_DATE_UTC     AS DueDateUtc,
-                      STATUS           AS Status
+                      ID                AS Id,
+                      USER_ID           AS UserId,
+                      TITLE             AS Title,
+                      DESCRIPTION       AS Description,
+                      PRIORITY          AS Priority,
+                      INSERTED_ON_UTC   AS InsertedOnUtc,
+                      DUE_DATE_UTC      AS DueDateUtc,
+                      ESTIMATED_MINUTES AS EstimatedMinutes,
+                      STATUS            AS Status
                   FROM TODO_ITEMS
                   WHERE USER_ID = @user_id
                     AND STATUS != @status

@@ -146,8 +146,14 @@ public class UserRepository(ISharedDatabaseUtils utils) : IUserRepository
     public async Task<bool> DeleteUserAsync(int id)
     {
         using var connection = utils.CreateConnection();
-        const string sql = "DELETE FROM USERS WHERE ID = @id";
-        var rowsAffected = await connection.ExecuteAsync(sql, new { id = id });
+        const string sql = """
+                           UPDATE USERS SET 
+                               DELETED_ON_UTC = @deleted_on_utc,
+                               DELETED_BY = @deleted_by
+                           WHERE ID = @id
+                           """;
+        var rowsAffected = await connection.ExecuteAsync(
+            sql, new { id = id, deleted_on_utc = DateTime.UtcNow, deleted_by = "API_REQUEST" });
         return rowsAffected != 0;
     }
 }

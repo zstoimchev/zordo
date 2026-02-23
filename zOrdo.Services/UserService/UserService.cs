@@ -66,8 +66,12 @@ public class UserService(
         var request = new User
         {
             FirstName = userRequest.FirstName ?? existingUser.FirstName,
+            MiddleName = userRequest.MiddleName ?? existingUser.MiddleName,
             LastName = userRequest.LastName ?? existingUser.LastName,
             Email = userRequest.Email ?? existingUser.Email,
+            PasswordHash = userRequest.Password != null 
+                ? BCrypt.Net.BCrypt.HashPassword(userRequest.Password)
+                : existingUser.PasswordHash 
         };
 
         var updatedUser = await userRepository.UpdateUserAsync(request, existingUser.Id);
